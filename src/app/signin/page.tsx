@@ -12,7 +12,7 @@ export default function LoginPage() {
         <Image
           // src="https://placehold.co/800x/667fff/ffffff.png?text=Your+Image&font=Montserrat"
           // src="/images/login.jpg"
-          src="/images/vete1.svg"
+          src="/images/login.svg"
           width={800}
           height={800}
           alt="Placeholder Image"

@@ -10,7 +10,7 @@ export default function LoginPage() {
       <div className="w-1/2 h-screen hidden lg:block">
         <Image
           // src="https://placehold.co/800x/667fff/ffffff.png?text=Your+Image&font=Montserrat"
-          src="/images/signup.jpg"
+          src="/images/signup.svg"
           width={923}
           height={923}
           // layout='responsive'
@@ -112,7 +112,7 @@ export default function LoginPage() {
               type="submit"
               className="bg-vino-500 hover:bg-vino-600 text-white font-semibold rounded-md py-2 px-4 w-full"
             >
-              Registrar
+              Registrarse
             </button>
           </form>
           <div className="mt-6 text-vino-500 text-center">
