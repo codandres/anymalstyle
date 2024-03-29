@@ -1,0 +1,1 @@
+export { ProductTemplateEditor } from './ProductTemplateEditor';

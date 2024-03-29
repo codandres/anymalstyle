@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ProductCard } from '@/components/products/ProductCard';
+import { ProductCard } from '@/components/products';
 
 export default function ProductsPage() {
   return (

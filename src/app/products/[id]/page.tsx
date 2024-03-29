@@ -1,4 +1,4 @@
-import { Star } from '@/components/products/Star';
+import { Star } from '@/components/products';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -18,7 +18,6 @@ export default function ProductPage() {
           </Link>
         </div>
         <div className="divide-y divide-dashed divide-vino-700 px-5 pb-5 w-1/2 p-8">
-
           <div id="firstSection">
             <Link href="#">
               <h3 className="text-gray-900 font-semibold text-xl tracking-tight">
@@ -55,7 +54,6 @@ export default function ProductPage() {
               Add to cart
             </Link>
           </div>
-
         </div>
       </div>
     </div>
