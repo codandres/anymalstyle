@@ -1,10 +1,27 @@
+import { Producto } from '@prisma/client';
 import Image from 'next/image';
+// import { useState } from 'react';
 
-export const ProductCard = () => {
+interface Props {
+  producto: Producto;
+}
+
+export const ProductCard = ({ producto }: Props) => {
+  // const [imagePreview, setImagePreview] = useState<string | null>(null);
+  let imagePreview: string | null = null;
+
+  if (producto.imagen) {
+    // const blob = new Blob([producto.imagen!]);
+    const blob = new Blob([Buffer.from(producto.imagen!)]);
+    imagePreview = URL.createObjectURL(blob);
+    // setImagePreview(URL.createObjectURL(blob));
+  }
+
   return (
     <div className="bg-white rounded-lg border p-4 max-w-sm">
       <Image
-        src="https://placehold.co/300x200/d1d4ff/352cb5.png"
+        // src="https://placehold.co/300x200/d1d4ff/352cb5.png"
+        src={imagePreview || '/images/no-image-found.jpg'}
         alt="Placeholder Image"
         className="w-full h-48 rounded-md object-cover"
         height={100}

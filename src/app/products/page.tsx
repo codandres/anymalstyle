@@ -1,7 +1,14 @@
 import Link from 'next/link';
 import { ProductCard } from '@/components/products';
+// import { getAllProducts } from '@/controllers/productController';
+import { ProductController } from '@/controllers/productController';
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const productController = new ProductController();
+
+  // const products = await getAllProducts(0, 10);
+  const products = await productController.getAll(0, 10);
+
   return (
     <div className="w-fit">
       <div className="flex justify-end mb-4">
@@ -12,15 +19,9 @@ export default function ProductsPage() {
         </Link>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-10">
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
+        {products.map((product) => (
+          <ProductCard key={product.idProducto} producto={product} />
+        ))}
       </div>
     </div>
   );
