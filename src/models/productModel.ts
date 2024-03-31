@@ -1,7 +1,11 @@
 'use server';
 
+import { CreateProductoDto } from '@/dto/createProductoDto';
+import { ProductoDto } from '@/dto/productoDto';
+import { toProductoDto } from '@/mappers/toProductoDtoMap';
 import prisma from '@/orm/prisma';
 import { Prisma, Producto } from '@prisma/client';
+import { redirect } from 'next/navigation';
 import * as yup from 'yup';
 
 const productoCreateSchema: yup.Schema = yup.object({
@@ -14,7 +18,22 @@ const productoCreateSchema: yup.Schema = yup.object({
   imagen: yup.mixed<Buffer>().optional(),
 });
 
-export async function getAllProducts(offset: number, limit: number): Promise<Producto[]> {
+const getProduct = async (idProducto: number): Promise<Producto> => {
+  const producto: Producto | null = await prisma.producto.findUnique({ where: { idProducto } });
+
+  if (!producto) throw new Error(`No producto with id ${idProducto} found`);
+
+  return producto;
+};
+
+export async function getProductById(productId: number): Promise<ProductoDto> {
+  const producto: Producto = await getProduct(productId);
+
+  // return toProductoDto(producto);
+  return await toProductoDto(producto);
+}
+
+export async function getAllProducts(offset: number, limit: number): Promise<ProductoDto[]> {
   console.log({ offset, limit });
 
   if (isNaN(offset)) {
@@ -27,34 +46,50 @@ export async function getAllProducts(offset: number, limit: number): Promise<Pro
 
   const productos: Producto[] = await prisma.producto.findMany({ skip: offset, take: limit });
 
-  return productos;
+  const result: Promise<ProductoDto>[] = [];
+
+  productos.forEach((product) => result.push(toProductoDto(product)));
+
+  return Promise.all(result);
 }
 
-export async function createProduct(product: Producto): Promise<Producto> {
+export async function createProduct(productDto: CreateProductoDto): Promise<void> {
   try {
-    console.log('AQUI1');
-    const payload = (await productoCreateSchema.validate(product)) as unknown as Producto;
-    console.log('AQUI2');
+    const payload = await productoCreateSchema.validate(productDto);
 
-    const dto: Prisma.ProductoCreateInput = {
+    let imageRaw: Buffer | undefined;
+
+    if (productDto.imagen) {
+      // const arrayBuffer: ArrayBuffer = await new Blob([productDto.imagen]).arrayBuffer();
+      // imageRaw = Buffer.from(payload.imagen, 'binary');
+      imageRaw = Buffer.from(productDto.imagen, 'binary');
+
+      console.log('image BUFF BEFORE SAVE :>> ', imageRaw);
+    }
+
+    const product: Prisma.ProductoCreateInput = {
       nombre: payload.nombre,
       precio: payload.precio,
       cantidad: payload.cantidad,
       descripcion: payload.descripcion,
-      // imagen: payload.imagen ? Buffer.from(payload.imagen),
-      imagen: Buffer.from(payload.imagen!),
-      // imagen: Buffer.from([1, 2, 3]),
-      tipo: { connect: { idTipoProducto: BigInt(payload.idTipo!) } },
-      marca: { connect: { idMarca: BigInt(payload.idMarca!) } },
+      imagen: imageRaw,
+      tipo: { connect: { idTipoProducto: payload.idTipo! } },
+      marca: { connect: { idMarca: payload.idMarca! } },
     };
-    console.log('AQUI3');
 
-    const producto: Producto = await prisma.producto.create({ data: dto });
-    console.log('AQUI4');
+    console.log('product :>> ', product);
 
-    return producto;
+    await prisma.producto.create({ data: product });
   } catch (error: any) {
     throw new Error(error.message);
-    // throw new Error('Un error');
   }
+  redirect('/products');
+}
+
+export async function deleteProductById(idProducto: number): Promise<ProductoDto> {
+  await getProduct(idProducto);
+
+  await prisma.producto.delete({ where: { idProducto } });
+
+  redirect('/products');
 }

@@ -30,8 +30,22 @@ export async function GET() {
 
   await prisma.producto.createMany({
     data: [
-      { nombre: 'Producto 1', cantidad: 10, precio: 100, idMarca: 2, idTipo: 2 },
-      { nombre: 'Producto 2', cantidad: 20, precio: 200, idMarca: 1, idTipo: 3 },
+      {
+        nombre: 'Producto 1',
+        descripcion: 'descripcion del producto 1',
+        cantidad: 10,
+        precio: 100,
+        idMarca: 2,
+        idTipo: 2,
+      },
+      {
+        nombre: 'Producto 2',
+        descripcion: 'descripcion del producto 1',
+        cantidad: 20,
+        precio: 200,
+        idMarca: 1,
+        idTipo: 3,
+      },
     ],
   });
 

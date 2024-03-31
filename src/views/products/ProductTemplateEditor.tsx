@@ -1,119 +1,149 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
-import { Prisma, Producto } from '@prisma/client';
-// import { Producto } from '@prisma/client';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Formik } from 'formik';
 import Image from 'next/image';
 import Link from 'next/link';
 import * as yup from 'yup';
 import { ProductController } from '@/controllers/productController';
-import { useRouter } from 'next/navigation';
+import { CreateProductoDto } from '@/dto/createProductoDto';
+import { ProductoDto } from '@/dto/productoDto';
 
 interface Props {
-  isEditing?: boolean;
+  productId?: number;
 }
 
 interface ProductoForm {
   nombre: string;
   descripcion: string;
-  cantidad: string;
-  precio: string;
+  cantidad: string | number;
+  precio: string | number;
   imagen: string;
-  idTipo: string;
-  idMarca: string;
+  idTipo: string | number;
+  idMarca: string | number;
 }
 
 const requiredMessage = 'Este campo es requerido';
 
 const formValidations = yup.object({
   nombre: yup.string().required(requiredMessage),
-  precio: yup.number().required(requiredMessage).min(300, 'Mínimo 300'),
-  cantidad: yup.number().required(requiredMessage).min(0),
+  precio: yup.number().required(requiredMessage).min(300, 'Precio mínimo: 500'),
+  cantidad: yup.number().required(requiredMessage).min(1, 'Unidades mínima: 1'),
   descripcion: yup.string().optional(),
-  idTipo: yup.number().required(requiredMessage),
-  idMarca: yup.number().required(requiredMessage),
+  idTipo: yup.number().optional(),
+  idMarca: yup.number().optional(),
   imagen: yup.string().optional(),
 });
 
-export const ProductTemplateEditor = ({ isEditing = false }: Props) => {
-  const router = useRouter();
-
-  const initialValues: ProductoForm = {
-    nombre: 'Pelota',
-    descripcion: 'Pelota de colores',
-    cantidad: '30',
-    precio: '3500',
-    imagen: '',
-    idTipo: '1',
-    idMarca: '2',
-  };
+export const ProductTemplateEditor = ({ productId }: Props) => {
+  const isEditing: boolean = !!productId;
+  const [product, setProducto] = useState<ProductoDto | undefined>(undefined);
+  const [image, setImage] = useState<Blob | null>(null);
+  const [imageSize, setImageSize] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const productController = new ProductController();
+
+  useEffect(() => {
+    if (isEditing) {
+      if (!product) {
+        productController.getById(productId!).then((res: ProductoDto) => {
+          setProducto(res);
+          setIsLoading(false);
+        });
+      } else {
+        setImagePreview(product.imagen || null);
+      }
+    } else {
+      setIsLoading(false);
+    }
+  }, [product, productController]);
+
+  if (isLoading) return;
+
+  // const initialValues: CreateProductoDto = {
+  //   nombre: 'Pelota',
+  //   descripcion: 'Pelota de colores',
+  //   cantidad: 30,
+  //   precio: 3500,
+  //   imagen: '',
+  //   idTipo: 3,
+  //   idMarca: 2,
+  // };
+
+  const initialValues: ProductoForm = {
+    nombre: product?.nombre || '',
+    descripcion: product?.descripcion || '',
+    cantidad: product?.cantidad || '',
+    precio: product?.precio || '',
+    imagen: product?.imagen || '',
+    idTipo: product?.idTipo || '',
+    idMarca: product?.idMarca || '',
+  };
 
   // const onSubmit = async (values: ProductoForm, helpers: FormikHelpers<ProductoForm>) => {
   // const onSubmit = async (values: ProductoForm) => {
   const onSubmit = async (values: any) => {
     try {
-      let imageRaw: Buffer | undefined;
+      let imageRaw: string | undefined;
 
       if (image) {
         const arrayBuffer: ArrayBuffer = await image.arrayBuffer();
-        imageRaw = Buffer.from(arrayBuffer);
+        imageRaw = Buffer.from(arrayBuffer).toString('binary');
       }
 
-      const product: Producto = {
+      const product: CreateProductoDto = {
         nombre: values.nombre,
         descripcion: values.descripcion,
         cantidad: parseInt(values.cantidad),
-        precio: new Prisma.Decimal(values.precio),
+        precio: Number(3399),
         imagen: imageRaw,
-        idTipo: BigInt(values.idTipo).toString(),
-        idMarca: BigInt(values.idMarca).toString(),
-      } as unknown as Producto;
-
-      // const data = JSON.stringify(
-      //   product,
-      //   (key, value) => (typeof value === 'bigint' ? value.toString() : value), // return everything else unchanged
-      // );
+        idTipo: parseInt(values.idTipo),
+        idMarca: parseInt(values.idMarca),
+      };
 
       if (isEditing) {
         // Update product
       } else {
-        // await productController.create(JSON.parse(data));
         await productController.create(product);
-        router.push('/products');
       }
     } catch (error: any) {
       console.error(error.message);
     }
   };
 
-  const [image, setImage] = useState<Blob | null>(null);
-  const [imageSize, setImageSize] = useState<string | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  // let image: Blob | null = null;
+  // let imageSize: string | null = null;
+  // let imagePreview: string | null = null;
 
   const onImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
+      console.log('event.target.files :>> ', event.target.files);
       setImage(event.target.files[0]);
       setImagePreview(URL.createObjectURL(event.target.files[0]));
       setImageSize((event.target.files[0].size / 1000000).toFixed(2));
+      // image = event.target.files[0];
+      // imagePreview = URL.createObjectURL(event.target.files[0]);
+      // imageSize = (event.target.files[0].size / 1000000).toFixed(2);
+
+      console.log('imagePreview SAVE :>> ', URL.createObjectURL(event.target.files[0]));
     }
   };
-
   return (
     <div className="w-fit mx-auto">
       <div className="flex justify-items-center bg-white shadow-md rounded-lg">
         <div className="w-1/2">
-          <Link href="#">
+          {
             <Image
               className="rounded-t-lg p-8"
               width={800}
               height={800}
               src={imagePreview || '/images/no-image-found.jpg'}
+              // src={undefined}
               alt="product image"
             />
-          </Link>
+          }
         </div>
         <div className="divide-y divide-dashed divide-vino-700 px-5 pb-5 w-1/2 pt-6">
           <div className="pb-8">
@@ -136,6 +166,7 @@ export const ProductTemplateEditor = ({ isEditing = false }: Props) => {
                   <div className="mb-2">
                     <label htmlFor="nombre" className="block text-gray-600">
                       Nombre del producto
+                      <span className="text-vino-700">*</span>
                     </label>
                     <input
                       type="text"
@@ -186,6 +217,7 @@ export const ProductTemplateEditor = ({ isEditing = false }: Props) => {
                     <div className="w-2/4">
                       <label htmlFor="precio" className="block text-gray-600">
                         Precio
+                        <span className="text-vino-700">*</span>
                       </label>
                       <input
                         type="number"
@@ -220,6 +252,7 @@ export const ProductTemplateEditor = ({ isEditing = false }: Props) => {
                     <div className="w-2/4">
                       <label htmlFor="cantidad" className="block text-gray-600">
                         Unidades
+                        <span className="text-vino-700">*</span>
                       </label>
                       <input
                         type="number"

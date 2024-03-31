@@ -1,12 +1,10 @@
 import Link from 'next/link';
 import { ProductCard } from '@/components/products';
-// import { getAllProducts } from '@/controllers/productController';
 import { ProductController } from '@/controllers/productController';
 
 export default async function ProductsPage() {
   const productController = new ProductController();
 
-  // const products = await getAllProducts(0, 10);
   const products = await productController.getAll(0, 10);
 
   return (

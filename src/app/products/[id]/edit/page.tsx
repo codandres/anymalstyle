@@ -1,5 +1,9 @@
 import { ProductTemplateEditor } from '@/views/products';
 
-export default function EditProductPage() {
-  return <ProductTemplateEditor isEditing />;
+interface Props {
+  params: { id: string };
+}
+
+export default function EditProductPage({ params: { id } }: Props) {
+  return <ProductTemplateEditor productId={Number(id)} />;
 }
