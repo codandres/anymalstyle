@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { Formik } from 'formik';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -43,7 +43,9 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const productController = new ProductController();
+  // const productController = new ProductController();
+
+  const productController = useMemo(() => new ProductController(), []);
 
   useEffect(() => {
     if (isEditing) {
@@ -58,7 +60,7 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
     } else {
       setIsLoading(false);
     }
-  }, [product, productController]);
+  }, [isEditing, product, productController, productId]);
 
   if (isLoading) return;
 
@@ -72,15 +74,29 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
   //   idMarca: 2,
   // };
 
-  const initialValues: ProductoForm = {
-    nombre: product?.nombre || '',
-    descripcion: product?.descripcion || '',
-    cantidad: product?.cantidad || '',
-    precio: product?.precio || '',
-    imagen: product?.imagen || '',
-    idTipo: product?.idTipo || '',
-    idMarca: product?.idMarca || '',
-  };
+  let initialValues: ProductoForm;
+
+  if (isEditing) {
+    initialValues = {
+      nombre: product?.nombre || '',
+      descripcion: product?.descripcion || '',
+      cantidad: product?.cantidad || '',
+      precio: product?.precio || '',
+      imagen: product?.imagen || '',
+      idTipo: product?.idTipo || '',
+      idMarca: product?.idMarca || '',
+    };
+  } else {
+    initialValues = {
+      nombre: 'Pelota Dorads',
+      descripcion: 'Pelota de colores',
+      cantidad: 30,
+      precio: 3500,
+      imagen: '',
+      idTipo: 3,
+      idMarca: 2,
+    };
+  }
 
   // const onSubmit = async (values: ProductoForm, helpers: FormikHelpers<ProductoForm>) => {
   // const onSubmit = async (values: ProductoForm) => {
@@ -97,7 +113,7 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
         nombre: values.nombre,
         descripcion: values.descripcion,
         cantidad: parseInt(values.cantidad),
-        precio: Number(3399),
+        precio: Number(values.precio),
         imagen: imageRaw,
         idTipo: parseInt(values.idTipo),
         idMarca: parseInt(values.idMarca),
@@ -105,6 +121,9 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
 
       if (isEditing) {
         // Update product
+        console.log('values', values);
+        console.log('image', image);
+        await productController.update({ idProducto: productId!, precio: values.precio });
       } else {
         await productController.create(product);
       }
