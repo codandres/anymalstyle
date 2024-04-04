@@ -60,6 +60,19 @@ role VARCHAR(20) NOT NULL DEFAULT('ADMIN'),
 direccion VARCHAR(200),
 contrasena VARCHAR(255) NOT NULL);
 
+CREATE TABLE cuenta(
+id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
+type VARCHAR(200) NOT NULL,
+provider VARCHAR(200) NOT NULL,
+provider_account_id VARCHAR(200) NOT NULL,
+refresh_token TEXT,
+access_token TEXT,
+expires_at BIGINT,
+token_type VARCHAR(200),
+scope VARCHAR(200),
+id_token TEXT,
+session_state VARCHAR(200));
+
 CREATE TABLE cita(
 id_cita BIGINT AUTO_INCREMENT PRIMARY KEY,
 fecha_hora_cita DATETIME NOT NULL,
@@ -255,6 +268,12 @@ ADD id_marca BIGINT;
 ALTER TABLE producto
 ADD FOREIGN KEY (id_marca) REFERENCES marca(id_marca) ON DELETE CASCADE;
 
+ALTER TABLE cuenta
+ADD id_usuario VARCHAR(36);
+
+ALTER TABLE cuenta
+ADD FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE;
+
 -- RELACION ENTIDADES MUCHOS A MUCHO N a N
 
 -- Vamos a relacionar proveedor a sucursal
@@ -299,3 +318,20 @@ ADD FOREIGN KEY(id_compra) REFERENCES producto(id_producto) ON DELETE CASCADE;
 
 ALTER TABLE oferta
 ADD FOREIGN KEY(id_promocion) REFERENCES promocion(id_promocion) ON DELETE CASCADE;
+
+-- INDICES (Para indexar busqueda por algun atributo y así ser mas rápida)
+
+CREATE UNIQUE INDEX email
+  ON usuario(correo);
+
+CREATE UNIQUE INDEX compound_id
+  ON cuenta(id);
+
+CREATE INDEX provider_account_id
+  ON cuenta(provider_account_id);
+
+CREATE INDEX provider_id
+  ON cuenta(provider);
+
+CREATE INDEX user_id
+  ON cuenta(id_usuario);
