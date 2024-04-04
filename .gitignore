@@ -37,3 +37,4 @@ next-env.d.ts
 
 /mysql_docker_data
 .vercel
+/prisma/generated
