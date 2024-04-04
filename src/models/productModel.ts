@@ -1,9 +1,9 @@
 'use server';
 
-import { CreateProductoDto } from '@/dto/createProductoDto';
-import { UpdateProductoDto } from '@/dto/editProductoDto';
-import { ProductoDto } from '@/dto/productoDto';
-import { toProductoDto } from '@/mappers/toProductoDtoMap';
+import { CreateProductoDto } from '@/dto/producto/createProductoDto';
+import { UpdateProductoDto } from '@/dto/producto/editProductoDto';
+import { ProductoDto } from '@/dto/producto/productoDto';
+import { toProductoDto } from '@/mappers/toProductoDto';
 import prisma from '@/orm/prisma';
 import { Prisma, Producto } from '@prisma/client';
 import { redirect } from 'next/navigation';
@@ -75,8 +75,6 @@ export async function createProduct(productDto: CreateProductoDto): Promise<void
       // const arrayBuffer: ArrayBuffer = await new Blob([productDto.imagen]).arrayBuffer();
       // imageRaw = Buffer.from(payload.imagen, 'binary');
       imageRaw = Buffer.from(productDto.imagen, 'binary');
-
-      console.log('image BUFF BEFORE SAVE :>> ', imageRaw);
     }
 
     const product: Prisma.ProductoCreateInput = {
@@ -89,9 +87,7 @@ export async function createProduct(productDto: CreateProductoDto): Promise<void
       marca: { connect: { idMarca: payload.idMarca! } },
     };
 
-    console.log('product :>> ', product);
-
-    await prisma.producto.create({ data: payload });
+    await prisma.producto.create({ data: product });
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -106,11 +102,7 @@ export async function updateProduct(productDto: UpdateProductoDto): Promise<void
     let imageRaw: Buffer | undefined;
 
     if (productDto.imagen) {
-      // const arrayBuffer: ArrayBuffer = await new Blob([productDto.imagen]).arrayBuffer();
-      // imageRaw = Buffer.from(payload.imagen, 'binary');
       imageRaw = Buffer.from(productDto.imagen, 'binary');
-
-      console.log('image BUFF BEFORE SAVE :>> ', imageRaw);
     }
 
     const product: Prisma.ProductoCreateInput = {
@@ -123,9 +115,7 @@ export async function updateProduct(productDto: UpdateProductoDto): Promise<void
       marca: { connect: { idMarca: payload.idMarca! } },
     };
 
-    console.log('product a update :>> ', product);
-
-    await prisma.producto.update({ data: payload, where: { idProducto: payload.idProducto } });
+    await prisma.producto.update({ data: product, where: { idProducto: payload.idProducto } });
   } catch (error: any) {
     throw new Error(error.message);
   }

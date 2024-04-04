@@ -1,7 +1,8 @@
 'use client';
 
 import { ProductController } from '@/controllers/productController';
-import { ProductoDto } from '@/dto/productoDto';
+import { ProductoDto } from '@/dto/producto/productoDto';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -14,7 +15,10 @@ interface Props {
 
 export const ProductCard = ({ producto }: Props) => {
   const router = useRouter();
-  // const productId = Number()
+  const session = useSession();
+
+  const user = session.data?.user;
+
   const handleEdit = async () => {
     router.push(`/products/${producto.idProducto}/edit`);
   };
@@ -38,32 +42,34 @@ export const ProductCard = ({ producto }: Props) => {
         width={100}
       />
       <div className="px-1 py-4">
-        <div className="text-vino-700 font-bold text-xl mb-2">{producto.nombre}</div>
+        <div className="text-vino-500 font-bold text-xl mb-2">{producto.nombre}</div>
         <p className="text-slate-600 text-base">{producto.descripcion}</p>
         <p className="text-vino-700 text-base font-bold">$ {producto.precio}</p>
         {/* <p className="text-slate-600 text-base">{producto.id}</p> */}
       </div>
-      <div className="flex px-1 py-4 justify-between">
+      <div className="flex px-1 py-4 justify-between align-bottom">
         <div className="content-center">
-          <Link href={`/products/${producto.idProducto}`} className="text-vino-700 hover:underline">
+          <Link href={`/products/${producto.idProducto}`} className="text-vino-500 hover:text-vino-700 hover:underline">
             Leer más
           </Link>
         </div>
-        <div className="flex justify-end">
-          <button
-            className="text-white mr-2 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            onClick={handleEdit}
-          >
-            <FaRegEdit size={25} />
-          </button>
-          <button
-            className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-            onClick={handleDeleteProduct}
-          >
-            <IoTrashOutline size={25} />
-            {/* Eliminar */}
-          </button>
-        </div>
+        {user && user.role === 'ADMIN' && (
+          <div className="flex justify-end">
+            <button
+              className="bg-vino-500 hover:bg-vino-600 text-white font-medium focus:ring-4 focus:ring-blue-300 rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mr-2"
+              onClick={handleEdit}
+            >
+              <FaRegEdit size={20} />
+            </button>
+            <button
+              className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+              onClick={handleDeleteProduct}
+            >
+              <IoTrashOutline size={20} />
+              {/* Eliminar */}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

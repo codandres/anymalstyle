@@ -1,4 +1,4 @@
-import { ProductoDto } from '@/dto/productoDto';
+import { ProductoDto } from '@/dto/producto/productoDto';
 import { Producto } from '@prisma/client';
 import imageType, { ImageTypeResult } from 'image-type';
 
@@ -7,8 +7,6 @@ const getImageBase64Data = async (image: Buffer | null): Promise<string | undefi
 
   const type: ImageTypeResult | undefined = await imageType(image);
   const mime = type?.mime || 'image/jpeg';
-  console.log('type :>> ', type);
-  console.log('mime :>> ', mime);
 
   return `data:${mime};base64,${image.toString('base64')}`;
 };

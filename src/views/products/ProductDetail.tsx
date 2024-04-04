@@ -2,7 +2,7 @@
 
 import { Star } from '@/components/products';
 import { ProductController } from '@/controllers/productController';
-import { ProductoDto } from '@/dto/productoDto';
+import { ProductoDto } from '@/dto/producto/productoDto';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';

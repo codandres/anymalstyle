@@ -52,13 +52,13 @@ CREATE TABLE usuario(
 id_usuario VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
 cedula BIGINT NOT NULL UNIQUE,
 nombre VARCHAR(200) NOT NULL,
-apellido VARCHAR(200) NOT NULL,
-telefono BIGINT NOT NULL,
-correo VARCHAR(200) NOT NULL,
-usuario VARCHAR(20) NOT NULL,
+apellido VARCHAR(200),
+telefono BIGINT,
+correo VARCHAR(200) NOT NULL UNIQUE,
+usuario VARCHAR(20) NOT NULL UNIQUE,
 role VARCHAR(20) NOT NULL DEFAULT('ADMIN'),
 direccion VARCHAR(200),
-contrasena VARCHAR(20) NOT NULL);
+contrasena VARCHAR(255) NOT NULL);
 
 CREATE TABLE account(
 id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
@@ -77,6 +77,17 @@ CREATE TABLE session(
 id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
 session_token TEXT NOT NULL,
 expires DATETIME NOT NULL);
+
+CREATE TABLE authenticator(
+id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
+credential_id VARCHAR(200) NOT NULL UNIQUE,
+provider_account_id VARCHAR(200) NOT NULL,
+credential_public_key VARCHAR(200) NOT NULL,
+counter INT NOT NULL,
+credential_device_type VARCHAR(200) NOT NULL,
+credential_backed_up BOOL NOT NULL,
+transports VARCHAR(200)
+);
 
 CREATE TABLE verification_token(
 identifier VARCHAR(200) NOT NULL UNIQUE,
@@ -288,6 +299,12 @@ ALTER TABLE account
 ADD id_usuario VARCHAR(36);
 
 ALTER TABLE account
+ADD FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE;
+
+ALTER TABLE authenticator
+ADD id_usuario VARCHAR(36);
+
+ALTER TABLE authenticator
 ADD FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE;
 
 

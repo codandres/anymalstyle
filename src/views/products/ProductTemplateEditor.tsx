@@ -1,13 +1,12 @@
 'use client';
 
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
-import { Formik } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 import Image from 'next/image';
-import Link from 'next/link';
 import * as yup from 'yup';
 import { ProductController } from '@/controllers/productController';
-import { CreateProductoDto } from '@/dto/createProductoDto';
-import { ProductoDto } from '@/dto/productoDto';
+import { CreateProductoDto } from '@/dto/producto/createProductoDto';
+import { ProductoDto } from '@/dto/producto/productoDto';
 
 interface Props {
   productId?: number;
@@ -88,7 +87,7 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
     };
   } else {
     initialValues = {
-      nombre: 'Pelota Dorads',
+      nombre: 'Pelota Dorada',
       descripcion: 'Pelota de colores',
       cantidad: 30,
       precio: 3500,
@@ -120,10 +119,7 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
       };
 
       if (isEditing) {
-        // Update product
-        console.log('values', values);
-        console.log('image', image);
-        await productController.update({ idProducto: productId!, precio: values.precio });
+        await productController.update({ idProducto: productId!, ...product });
       } else {
         await productController.create(product);
       }
@@ -132,23 +128,14 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
     }
   };
 
-  // let image: Blob | null = null;
-  // let imageSize: string | null = null;
-  // let imagePreview: string | null = null;
-
   const onImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      console.log('event.target.files :>> ', event.target.files);
       setImage(event.target.files[0]);
       setImagePreview(URL.createObjectURL(event.target.files[0]));
       setImageSize((event.target.files[0].size / 1000000).toFixed(2));
-      // image = event.target.files[0];
-      // imagePreview = URL.createObjectURL(event.target.files[0]);
-      // imageSize = (event.target.files[0].size / 1000000).toFixed(2);
-
-      console.log('imagePreview SAVE :>> ', URL.createObjectURL(event.target.files[0]));
     }
   };
+
   return (
     <div className="w-fit mx-auto">
       <div className="flex justify-items-center bg-white shadow-md rounded-lg">
@@ -173,14 +160,7 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
 
           <div className="py-4">
             <Formik initialValues={initialValues} validationSchema={formValidations} onSubmit={onSubmit}>
-              {({
-                values,
-                errors,
-                touched,
-                handleSubmit,
-                handleChange,
-                /* and other goodies */
-              }) => (
+              {({ values, errors, touched, handleSubmit, handleChange }) => (
                 <form onSubmit={handleSubmit}>
                   <div className="mb-2">
                     <label htmlFor="nombre" className="block text-gray-600">
@@ -316,95 +296,6 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
                   </div>
                 </form>
               )}
-
-              {/* <form>
-                <div className="mb-2">
-                  <label htmlFor="nombre" className="block text-gray-600">
-                    Nombre del producto
-                  </label>
-                  <input
-                    type="text"
-                    id="nombre"
-                    name="nombre"
-                    className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-vino-500 required:*"
-                    autoComplete="off"
-                  />
-                </div>
-                <div className="mb-2">
-                  <label htmlFor="descripcion" className="block text-gray-600">
-                    Descripción
-                  </label>
-                  <input
-                    type="text"
-                    id="descripcion"
-                    name="descripcion"
-                    className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-vino-500"
-                    autoComplete="off"
-                  />
-                </div>
-
-                <div className="flex justify-between mb-2">
-                  <div className="w-1/3">
-                    <label htmlFor="tipo" className="block text-gray-600">
-                      Tipo
-                    </label>
-                    <select
-                      name="tipo"
-                      className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-vino-500"
-                    >
-                      <option value="Seleccionar">Seleccionar</option>
-                      <option value="a">Medicamento</option>
-                      <option value="b">Comida</option>
-                      <option value="c">Juguete</option>
-                    </select>
-                  </div>
-                  <div className="w-2/4">
-                    <label htmlFor="precio" className="block text-gray-600">
-                      Costo
-                    </label>
-                    <input
-                      type="number"
-                      id="precio"
-                      name="precio"
-                      className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-vino-500"
-                      autoComplete="off"
-                    />
-                  </div>
-                </div>
-                <div className="mb-2">
-                  <label htmlFor="cantidad" className="block text-gray-600">
-                    Unidades
-                  </label>
-                  <input
-                    type="text"
-                    id="cantidad"
-                    name="cantidad"
-                    className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-vino-500"
-                    autoComplete="off"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="imagen" className="block text-gray-600">
-                    Subir Imagen
-                  </label>
-                  <input
-                    type="file"
-                    id="imagen"
-                    name="imagen"
-                    className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-vino-500"
-                    autoComplete="off"
-                  />
-                </div>
-
-                <div id="secondSection" className="flex items-center justify-between py-8">
-                  <button
-                    type="submit"
-                    className="bg-vino-500 hover:bg-vino-600 text-white font-semibold rounded-md py-2 px-4 w-full"
-                  >
-                    {isEditing ? 'Actualizar Producto' : 'Guardar Producto'}
-                  </button>
-                </div>
-              </form> */}
             </Formik>
           </div>
         </div>

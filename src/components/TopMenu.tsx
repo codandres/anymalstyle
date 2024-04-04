@@ -1,8 +1,13 @@
 import Link from 'next/link';
 import { CiBellOn, CiChat1, CiLogin, CiMenuBurger, CiSearch, CiShoppingBasket } from 'react-icons/ci';
+import { FiUserCheck } from 'react-icons/fi';
+import { LogoutButton } from './auth/LogoutButton';
+import { getUserSession } from '@/helpers/getUserSession';
+import { User } from 'next-auth';
 
-export const TopMenu = () => {
+export const TopMenu = async () => {
   const cartItemsCount = 0;
+  const user: User | undefined = await getUserSession();
 
   return (
     <>
@@ -49,19 +54,23 @@ export const TopMenu = () => {
             <button className="flex items-center justify-center w-10 h-10 rounded-xl border bg-gray-100 focus:bg-gray-100 active:bg-gray-200">
               <CiBellOn size={25} />
             </button>
-            {/* <button className="flex items-center justify-center w-10 h-10 rounded-xl border bg-gray-100 focus:bg-gray-100 active:bg-gray-200">
-              <CiLogin size={25} />
-            </button> */}
+
             <Link
               href={'/signin'}
               className="flex items-center justify-center w-10 h-10 rounded-xl border bg-gray-100 focus:bg-gray-100 active:bg-gray-200"
             >
-              <CiLogin size={25} />
+              {user ? <FiUserCheck size={25} /> : <CiLogin size={25} />}
             </Link>
+            <div className="ml-2">
+              <p>
+                {user && `Hola ${user.name || 'Usuario'}!`}{' '}
+                <span className="text-vino-700 font-bold text-xs">{user?.role}</span>
+              </p>
+              <p>{user && <LogoutButton />}</p>
+            </div>
           </div>
         </div>
       </div>
-      {/* TODO: Fin del <TopMenu /> */}
     </>
   );
 };
