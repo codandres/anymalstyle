@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "generate:db-interfaces && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "generate:db-interfaces": "prisma generate"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.5.1",
