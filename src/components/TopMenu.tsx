@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { CiBellOn, CiChat1, CiLogin, CiMenuBurger, CiSearch, CiShoppingBasket } from 'react-icons/ci';
 import { FiUserCheck } from 'react-icons/fi';
 import { LogoutButton } from './auth/LogoutButton';
-import { getUserSession } from '@/helpers/getUserSession';
+import { getUserSession } from '@/helpers/auth/getUserSession';
 import { User } from 'next-auth';
 
 export const TopMenu = async () => {

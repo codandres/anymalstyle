@@ -1,4 +1,4 @@
-import { getUserSession } from '@/helpers/getUserSession';
+import { getUserSession } from '@/helpers/auth/getUserSession';
 import { ProductTemplateEditor } from '@/views/products';
 import { redirect } from 'next/navigation';
 

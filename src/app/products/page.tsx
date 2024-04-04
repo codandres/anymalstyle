@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ProductCard } from '@/components/products';
 import { ProductController } from '@/controllers/productController';
-import { getUserSession } from '@/helpers/getUserSession';
+import { getUserSession } from '@/helpers/auth/getUserSession';
 
 export default async function ProductsPage() {
   const productController = new ProductController();

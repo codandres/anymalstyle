@@ -1,4 +1,4 @@
-import { getUserSession } from '@/helpers/getUserSession';
+import { getUserSession } from '@/helpers/auth/getUserSession';
 import { SignIn } from '@/views/auth';
 import { redirect } from 'next/navigation';
 

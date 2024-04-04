@@ -5,17 +5,14 @@ import { ProductController } from '@/controllers/productController';
 import { ProductoDto } from '@/dto/producto/productoDto';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { IoAddCircleOutline, IoTrashOutline } from 'react-icons/io5';
+import { useEffect, useMemo, useState } from 'react';
 
 interface Props {
   productId: number;
 }
 
 export const ProductDetail = ({ productId }: Props) => {
-  const productController = new ProductController();
-
-  //   const product: ProductoDto =  productController.getById(productId);
+  const productController = useMemo(() => new ProductController(), []);
 
   const [product, setProducto] = useState<ProductoDto | undefined>(undefined);
 
@@ -25,11 +22,7 @@ export const ProductDetail = ({ productId }: Props) => {
         setProducto(res);
       }
     });
-  }, [product, productController]);
-
-  const handleDeleteProduct = async () => {
-    await productController.deleteById(productId);
-  };
+  }, [product, productController, productId]);
 
   if (!product) return;
 
