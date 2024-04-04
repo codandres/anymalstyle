@@ -24,13 +24,13 @@ export const SignUp = () => {
   const authController = useMemo(() => new AuthController(), []);
 
   const initialValues = {
-    nombre: 'Andrés',
-    apellido: 'Escalante',
-    cedula: '1017233307',
-    telefono: 3004147412,
-    email: 'andres_95@outlook.com',
-    usuario: 'andres95',
-    password: 'pika1234',
+    nombre: '',
+    apellido: '',
+    cedula: '',
+    telefono: '',
+    email: '',
+    usuario: '',
+    password: '',
   };
 
   const [errorMessage, setErrorMessage] = useState(undefined);

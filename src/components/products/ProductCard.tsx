@@ -33,9 +33,6 @@ export const ProductCard = ({ producto }: Props) => {
     <div className="bg-white rounded-lg border p-4 max-w-sm">
       <Image
         src={producto.imagen || '/images/no-image-found.jpg'}
-        // src={`data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
-        // AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
-        //     9TXL0Y4OHwAAAABJRU5ErkJggg==`}
         alt={producto.nombre}
         className="w-full h-48 rounded-md object-cover"
         height={100}

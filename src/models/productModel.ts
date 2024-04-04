@@ -41,7 +41,6 @@ const getProduct = async (idProducto: number): Promise<Producto> => {
 export async function getProductById(productId: number): Promise<ProductoDto> {
   const producto: Producto = await getProduct(productId);
 
-  // return toProductoDto(producto);
   return await toProductoDto(producto);
 }
 
@@ -72,8 +71,6 @@ export async function createProduct(productDto: CreateProductoDto): Promise<void
     let imageRaw: Buffer | undefined;
 
     if (productDto.imagen) {
-      // const arrayBuffer: ArrayBuffer = await new Blob([productDto.imagen]).arrayBuffer();
-      // imageRaw = Buffer.from(payload.imagen, 'binary');
       imageRaw = Buffer.from(productDto.imagen, 'binary');
     }
 

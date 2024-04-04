@@ -42,8 +42,6 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // const productController = new ProductController();
-
   const productController = useMemo(() => new ProductController(), []);
 
   useEffect(() => {
@@ -62,16 +60,6 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
   }, [isEditing, product, productController, productId]);
 
   if (isLoading) return;
-
-  // const initialValues: CreateProductoDto = {
-  //   nombre: 'Pelota',
-  //   descripcion: 'Pelota de colores',
-  //   cantidad: 30,
-  //   precio: 3500,
-  //   imagen: '',
-  //   idTipo: 3,
-  //   idMarca: 2,
-  // };
 
   let initialValues: ProductoForm;
 
@@ -97,8 +85,6 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
     };
   }
 
-  // const onSubmit = async (values: ProductoForm, helpers: FormikHelpers<ProductoForm>) => {
-  // const onSubmit = async (values: ProductoForm) => {
   const onSubmit = async (values: any) => {
     try {
       let imageRaw: string | undefined;
@@ -146,7 +132,6 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
               width={800}
               height={800}
               src={imagePreview || '/images/no-image-found.jpg'}
-              // src={undefined}
               alt="product image"
             />
           }
@@ -277,10 +262,7 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
                       accept="image/*"
                       className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-vino-500"
                       autoComplete="off"
-                      // ref={inputFileRef}
-                      // ref={values.imagen}
                       onChange={onImageChange}
-                      // value={values.imagen}
                     />
                     <div>{imageSize && `Peso: ${imageSize} MB`}</div>
                     <div className="text-vino-700">{errors.imagen && touched.imagen && errors.imagen}</div>

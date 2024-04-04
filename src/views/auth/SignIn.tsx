@@ -23,8 +23,8 @@ interface SignInForm {
 export const SignIn = () => {
   const router = useRouter();
   const initialValues: SignInForm = {
-    email: 'andres_95@outlook.com',
-    password: 'pika1234',
+    email: '',
+    password: '',
   };
 
   const onSubmit = async (values: SignInForm) => {
@@ -54,8 +54,6 @@ export const SignIn = () => {
       {/* <!-- Left: Image --> */}
       <div className="w-1/2 h-screen hidden lg:block">
         <Image
-          // src="https://placehold.co/800x/667fff/ffffff.png?text=Your+Image&font=Montserrat"
-          // src="/images/login.jpg"
           src="/images/login.svg"
           width={800}
           height={800}
