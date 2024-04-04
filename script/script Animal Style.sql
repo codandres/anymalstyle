@@ -60,40 +60,6 @@ role VARCHAR(20) NOT NULL DEFAULT('ADMIN'),
 direccion VARCHAR(200),
 contrasena VARCHAR(255) NOT NULL);
 
-CREATE TABLE account(
-id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
-type VARCHAR(200) NOT NULL,
-provider VARCHAR(200) NOT NULL,
-provider_account_id VARCHAR(200) NOT NULL,
-refresh_token TEXT,
-access_token TEXT,
-expires_at BIGINT,
-token_type VARCHAR(200),
-scope VARCHAR(200),
-id_token TEXT,
-session_state VARCHAR(200));
-
-CREATE TABLE session(
-id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
-session_token TEXT NOT NULL,
-expires DATETIME NOT NULL);
-
-CREATE TABLE authenticator(
-id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
-credential_id VARCHAR(200) NOT NULL UNIQUE,
-provider_account_id VARCHAR(200) NOT NULL,
-credential_public_key VARCHAR(200) NOT NULL,
-counter INT NOT NULL,
-credential_device_type VARCHAR(200) NOT NULL,
-credential_backed_up BOOL NOT NULL,
-transports VARCHAR(200)
-);
-
-CREATE TABLE verification_token(
-identifier VARCHAR(200) NOT NULL UNIQUE,
-token TEXT NOT NULL,
-expires DATETIME NOT NULL);
-
 CREATE TABLE cita(
 id_cita BIGINT AUTO_INCREMENT PRIMARY KEY,
 fecha_hora_cita DATETIME NOT NULL,
@@ -288,25 +254,6 @@ ADD id_marca BIGINT;
 
 ALTER TABLE producto
 ADD FOREIGN KEY (id_marca) REFERENCES marca(id_marca) ON DELETE CASCADE;
-
-ALTER TABLE session
-ADD id_usuario VARCHAR(36);
-
-ALTER TABLE session
-ADD FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE;
-
-ALTER TABLE account
-ADD id_usuario VARCHAR(36);
-
-ALTER TABLE account
-ADD FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE;
-
-ALTER TABLE authenticator
-ADD id_usuario VARCHAR(36);
-
-ALTER TABLE authenticator
-ADD FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE;
-
 
 -- RELACION ENTIDADES MUCHOS A MUCHO N a N
 

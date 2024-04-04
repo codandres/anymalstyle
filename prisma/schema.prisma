@@ -7,39 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Account {
-  id                String  @id @default(dbgenerated("(uuid())")) @db.VarChar(36)
-  type              String  @db.VarChar(200)
-  provider          String  @db.VarChar(200)
-  providerAccountId String  @map("provider_account_id") @db.VarChar(200)
-  refresh_token     String? @map("refresh_token") @db.Text
-  access_token      String? @map("access_token") @db.Text
-  expires_at        BigInt? @map("expires_at")
-  token_type        String? @map("token_type") @db.VarChar(200)
-  scope             String? @db.VarChar(200)
-  id_token          String? @map("id_token") @db.Text
-  session_state     String? @map("session_state") @db.VarChar(200)
-  userId            String? @map("id_usuario") @db.VarChar(36)
-  user              User?   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "account_ibfk_1")
-
-  @@index([userId], map: "id_usuario")
-  @@map("account")
-}
-
-model Authenticator {
-  id                   String  @id @default(cuid())
-  credentialID         String  @unique @map("credential_id")
-  userId               String  @map("id_usuario")
-  providerAccountId    String  @map("provider_account_id")
-  credentialPublicKey  String  @map("credential_public_key")
-  counter              Int     @map("counter")
-  credentialDeviceType String  @map("credential_device_type")
-  credentialBackedUp   Boolean @map("credential_backed_up")
-  transports           String? @map("transports")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
 model Carrito {
   idUsuario String   @map("id_usuario") @db.VarChar(36)
   compra    BigInt
@@ -289,17 +256,6 @@ model Resena {
   @@map("resena")
 }
 
-model Session {
-  id           String   @id @default(dbgenerated("(uuid())")) @map("id") @db.VarChar(36)
-  sessionToken String   @map("session_token") @db.Text
-  expires      DateTime @map("expires") @db.DateTime(0)
-  userId       String?  @map("id_usuario") @db.VarChar(36)
-  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "session_ibfk_1")
-
-  @@index([userId], map: "id_usuario")
-  @@map("session")
-}
-
 model Sucursal {
   direccion         String           @id @map("direccion") @db.VarChar(200)
   nombre            String           @map("nombre") @db.VarChar(200)
@@ -358,25 +314,14 @@ model User {
   direccion           String?          @map("direccion") @db.VarChar(200)
   password            String           @map("contrasena") @db.VarChar(255)
   idSucursalVirtual   BigInt?          @map("id_sucursal_virtual")
-  accounts            Account[]
   carritos            Carrito[]
   citas               Cita[]
   facturas            Factura[]
   foros               Foro[]
   metodosPagos        MetodoPago[]
   resenas             Resena[]
-  sessions            Session[]
   sucursalesVirtuales SucursalVirtual? @relation(fields: [idSucursalVirtual], references: [idSucursalVirtual], onDelete: Cascade, onUpdate: NoAction, map: "usuario_ibfk_1")
-  authenticator       Authenticator[]
 
   @@index([idSucursalVirtual], map: "id_sucursal_virtual")
   @@map("usuario")
-}
-
-model VerificationToken {
-  identifier String   @unique(map: "identifier") @map("identifier") @db.VarChar(200)
-  token      String   @map("token") @db.Text
-  expires    DateTime @map("expires") @db.DateTime(0)
-
-  @@map("verification_token")
 }
