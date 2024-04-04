@@ -1,5 +1,6 @@
 'use server';
 
+import { CreateUsuarioDto } from '@/dto/auth/CreateUsuarioDto';
 import { UsuarioDto } from '@/dto/auth/UsuarioDto';
 import { toUsuarioDto } from '@/mappers/toUsuarioDto';
 import prisma from '@/orm/prisma';
@@ -9,7 +10,7 @@ import { redirect } from 'next/navigation';
 
 const uniqueConstraintErrorCode = 'P2002';
 
-export const signUpUser = async (usuario: UsuarioDto): Promise<UsuarioDto> => {
+export const signUpUser = async (usuario: CreateUsuarioDto, redirection: boolean = true): Promise<void> => {
   try {
     const password: string = bcrypt.hashSync(usuario.password, 10);
 
@@ -32,7 +33,7 @@ export const signUpUser = async (usuario: UsuarioDto): Promise<UsuarioDto> => {
     throw error;
   }
 
-  redirect('/signin');
+  if (redirection) redirect('/signin');
 };
 
 export const signInEmailPassword = async (email?: string, password?: string): Promise<UsuarioDto | null> => {

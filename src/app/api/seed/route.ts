@@ -1,3 +1,5 @@
+import { CreateUsuarioDto } from '@/dto/auth/CreateUsuarioDto';
+import { signUpUser } from '@/models/authModel';
 import prisma from '@/orm/prisma';
 import { NextResponse } from 'next/server';
 
@@ -5,6 +7,8 @@ export async function GET() {
   await prisma.marca.deleteMany();
   await prisma.tipoProducto.deleteMany();
   await prisma.producto.deleteMany();
+  await prisma.account.deleteMany();
+  await prisma.user.deleteMany();
 
   const marcas = await prisma.marca.createMany({
     data: [
@@ -88,6 +92,33 @@ export async function GET() {
       },
     ],
   });
+
+  const userAdmin: CreateUsuarioDto = {
+    nombre: 'Juan',
+    apellido: 'Perez',
+    cedula: 10000000,
+    email: 'admin@mail.com',
+    password: 'pass123',
+    usuario: 'admin',
+    role: 'ADMIN',
+    telefono: 3000000000,
+    direccion: null,
+  };
+
+  const user: CreateUsuarioDto = {
+    nombre: 'Andrés',
+    apellido: 'Posada',
+    cedula: 10000001,
+    email: 'user@mail.com',
+    password: 'pass123',
+    usuario: 'user',
+    role: 'USER',
+    telefono: 3000000001,
+    direccion: null,
+  };
+
+  await signUpUser(userAdmin, false);
+  await signUpUser(user, false);
 
   return NextResponse.json({ message: 'Seed Excecuted' });
 }
