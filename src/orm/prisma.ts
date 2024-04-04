@@ -5,6 +5,8 @@ let prisma: PrismaClient;
 
 const env: string = process.env.NODE_ENV;
 
+console.log('EL ENV: ', env);
+
 if (env === 'production') {
   prisma = new PrismaClient();
 } else {
