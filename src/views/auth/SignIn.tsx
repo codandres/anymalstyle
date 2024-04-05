@@ -63,7 +63,7 @@ export const SignIn = () => {
         />
       </div>
       {/* <!-- Right: Login Form --> */}
-      <div className="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2 flex justify-center items-center">
+      <div className="lg:p-0 xl:p-15 2xl:p-36 p-8 w-full lg:w-1/2 flex justify-center items-center">
         <div className="w-1/2">
           <div className="text-center">
             <h1 className="text-2xl font-semibold mb-8">Inicio de Sesión</h1>
