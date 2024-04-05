@@ -8,6 +8,7 @@ import { ProductController } from '@/controllers/productController';
 import { CreateProductoDto } from '@/dto/producto/createProductoDto';
 import { ProductoDto } from '@/dto/producto/productoDto';
 import { ImSpinner8 } from 'react-icons/im';
+import { ProductDetailLoader } from '@/components/loaders';
 
 interface Props {
   productId?: number;
@@ -60,7 +61,9 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
     }
   }, [isEditing, product, productController, productId]);
 
-  if (isLoading) return;
+  if (isLoading) {
+    return <ProductDetailLoader />;
+  }
 
   let initialValues: ProductoForm;
 
