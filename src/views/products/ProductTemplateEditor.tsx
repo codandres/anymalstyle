@@ -7,6 +7,7 @@ import * as yup from 'yup';
 import { ProductController } from '@/controllers/productController';
 import { CreateProductoDto } from '@/dto/producto/createProductoDto';
 import { ProductoDto } from '@/dto/producto/productoDto';
+import { ImSpinner8 } from 'react-icons/im';
 
 interface Props {
   productId?: number;
@@ -22,7 +23,7 @@ interface ProductoForm {
   idMarca: string | number;
 }
 
-const requiredMessage = 'Este campo es requerido';
+const requiredMessage = 'este campo es requerido';
 
 const formValidations = yup.object({
   nombre: yup.string().required(requiredMessage),
@@ -145,7 +146,7 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
 
           <div className="py-4">
             <Formik initialValues={initialValues} validationSchema={formValidations} onSubmit={onSubmit}>
-              {({ values, errors, touched, handleSubmit, handleChange }) => (
+              {({ values, errors, touched, handleSubmit, handleChange, isSubmitting }) => (
                 <form onSubmit={handleSubmit}>
                   <div className="mb-2">
                     <label htmlFor="nombre" className="block text-gray-600">
@@ -271,9 +272,12 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
                   <div id="secondSection" className="flex items-center justify-between py-8">
                     <button
                       type="submit"
-                      className="bg-vino-500 hover:bg-vino-600 text-white font-semibold rounded-md py-2 px-4 w-full"
+                      className="bg-vino-500 hover:bg-vino-600 text-white font-semibold rounded-md py-2 px-4 w-full disabled:bg-white disabled:hover:bg-white"
+                      disabled={isSubmitting}
                     >
-                      {isEditing ? 'Actualizar Producto' : 'Guardar Producto'}
+                      {isSubmitting && <ImSpinner8 size={25} className="loading-icon m-auto text-vino-500" />}
+                      {isEditing && !isSubmitting && 'Actualizar Producto'}
+                      {!isEditing && !isSubmitting && 'Guardar Producto'}
                     </button>
                   </div>
                 </form>

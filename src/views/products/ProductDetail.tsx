@@ -1,30 +1,26 @@
 'use client';
 
+import { ProductDetailLoader } from '@/components/loaders';
 import { Star } from '@/components/products';
-import { ProductController } from '@/controllers/productController';
-import { ProductoDto } from '@/dto/producto/productoDto';
+
+import { useGetProductById } from '@/hooks/useGetProductById';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
 
 interface Props {
   productId: number;
 }
 
 export const ProductDetail = ({ productId }: Props) => {
-  const productController = useMemo(() => new ProductController(), []);
+  const { product, isLoading, error } = useGetProductById(productId);
 
-  const [product, setProducto] = useState<ProductoDto | undefined>(undefined);
+  if (isLoading) {
+    return <ProductDetailLoader />;
+  }
 
-  useEffect(() => {
-    productController.getById(productId).then((res: ProductoDto) => {
-      if (!product) {
-        setProducto(res);
-      }
-    });
-  }, [product, productController, productId]);
-
-  if (!product) return;
+  if (error) {
+    return <div>Un error inesperado ha occurido</div>;
+  }
 
   return (
     <div className="w-fit mx-auto">

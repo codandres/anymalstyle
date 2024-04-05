@@ -7,15 +7,16 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { toast } from 'react-hot-toast';
+import { ImSpinner8 } from 'react-icons/im';
 
-const requiredMessage = 'Este campo es requerido';
+const requiredMessage = 'este campo es requerido';
 
 const formValidations = yup.object({
   nombre: yup.string().required(requiredMessage),
   apellido: yup.string().required(requiredMessage),
   cedula: yup.number().required(requiredMessage).min(1, 'Unidades mínima: 1'),
   telefono: yup.number().required(requiredMessage).min(1, 'Unidades mínima: 1'),
-  email: yup.string().required(requiredMessage),
+  email: yup.string().email().required(requiredMessage),
   usuario: yup.string().required(requiredMessage),
   password: yup.string().required(requiredMessage),
 });
@@ -24,13 +25,13 @@ export const SignUp = () => {
   const authController = useMemo(() => new AuthController(), []);
 
   const initialValues = {
-    nombre: '',
-    apellido: '',
-    cedula: '',
-    telefono: '',
-    email: '',
-    usuario: '',
-    password: '',
+    nombre: 'Miguel',
+    apellido: 'Mora',
+    cedula: 2,
+    telefono: 300,
+    email: 'user1@mail.com',
+    usuario: 'user1',
+    password: 'pass123',
   };
 
   const [errorMessage, setErrorMessage] = useState(undefined);
@@ -38,6 +39,7 @@ export const SignUp = () => {
   const onSubmit = async (values: any) => {
     try {
       await authController.createUser(values);
+
       toast.success('Usuario creado correctamente!');
     } catch (error: any) {
       const message = error.message;
@@ -64,7 +66,7 @@ export const SignUp = () => {
             <h1 className="text-2xl font-semibold mb-8">Registro</h1>
           </div>
           <Formik initialValues={initialValues} validationSchema={formValidations} onSubmit={onSubmit}>
-            {({ values, errors, touched, handleSubmit, handleChange }) => (
+            {({ values, errors, touched, handleSubmit, handleChange, isSubmitting }) => (
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-2 gap-4">
                   {/* <!-- Nombre Input --> */}
@@ -190,9 +192,14 @@ export const SignUp = () => {
                 <div className="text-vino-700">{errorMessage}</div>
                 <button
                   type="submit"
-                  className="bg-vino-500 hover:bg-vino-600 text-white font-semibold rounded-md py-2 px-4 w-full"
+                  className="bg-vino-500 hover:bg-vino-600 text-white font-semibold rounded-md py-2 px-4 w-full disabled:bg-slate-100 disabled:hover:bg-slate-100"
+                  disabled={isSubmitting}
                 >
-                  Registrarse
+                  {isSubmitting ? (
+                    <ImSpinner8 size={25} className="loading-icon m-auto text-vino-500" />
+                  ) : (
+                    'Registrarse'
+                  )}
                 </button>
               </form>
             )}

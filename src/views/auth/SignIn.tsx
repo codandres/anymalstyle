@@ -7,11 +7,12 @@ import Link from 'next/link';
 import * as yup from 'yup';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { ImSpinner8 } from 'react-icons/im';
 
-const requiredMessage = 'Este campo es requerido';
+const requiredMessage = 'este campo es requerido';
 
 const formValidations = yup.object({
-  email: yup.string().required(requiredMessage),
+  email: yup.string().email('debe ser un correo válido').required(requiredMessage),
   password: yup.string().required(requiredMessage),
 });
 
@@ -68,7 +69,7 @@ export const SignIn = () => {
             <h1 className="text-2xl font-semibold mb-8">Inicio de Sesión</h1>
           </div>
           <Formik initialValues={initialValues} validationSchema={formValidations} onSubmit={onSubmit}>
-            {({ values, errors, touched, handleSubmit, handleChange }) => (
+            {({ values, errors, touched, handleSubmit, handleChange, isSubmitting }) => (
               <form onSubmit={handleSubmit}>
                 {/* <!-- Correo Input --> */}
                 <div className="mb-4">
@@ -118,9 +119,10 @@ export const SignIn = () => {
                 {/* <!-- Login Button --> */}
                 <button
                   type="submit"
-                  className="bg-vino-500 hover:bg-vino-600 text-white font-semibold rounded-md py-2 px-4 w-full"
+                  className=" bg-vino-500 hover:bg-vino-600 text-white font-semibold rounded-md py-2 px-4 w-full disabled:bg-slate-100 disabled:hover:bg-slate-100"
+                  disabled={isSubmitting}
                 >
-                  Ingresar
+                  {isSubmitting ? <ImSpinner8 size={25} className="loading-icon m-auto text-vino-500" /> : 'Ingresar'}
                 </button>
               </form>
             )}
