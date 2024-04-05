@@ -58,7 +58,7 @@ export const SignUp = () => {
           className="object-cover w-full h-full"
         />
       </div>
-      <div className="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2 flex justify-center items-center">
+      <div className="lg:p-18 md:p-30 sm:20 p-8 w-full lg:w-1/2 flex justify-center items-center">
         <div>
           <div className="text-center">
             <h1 className="text-2xl font-semibold mb-8">Registro</h1>
@@ -101,9 +101,9 @@ export const SignUp = () => {
                     <div className="text-vino-700">{errors.apellido && touched.apellido && errors.apellido}</div>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 2  xl:grid-cols-2 gap-4 mb-4">
                   {/* <!-- Cédula Input --> */}
-                  <div className="mb-4">
+                  <div>
                     <label htmlFor="cedula" className="block text-gray-600">
                       Cédula de Ciudadanía
                       <span className="text-vino-700">*</span>
@@ -120,7 +120,7 @@ export const SignUp = () => {
                     <div className="text-vino-700">{errors.cedula && touched.cedula && errors.cedula}</div>
                   </div>
                   {/* <!-- Celular Input --> */}
-                  <div className="mb-4">
+                  <div>
                     <label htmlFor="celular" className="block text-gray-600">
                       Celular
                     </label>
