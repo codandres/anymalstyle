@@ -7,7 +7,7 @@ import Link from 'next/link';
 import * as yup from 'yup';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { ImSpinner8 } from 'react-icons/im';
+import { Spinner } from '@/components/loaders';
 
 const requiredMessage = 'este campo es requerido';
 
@@ -122,7 +122,7 @@ export const SignIn = () => {
                   className=" bg-vino-500 hover:bg-vino-600 text-white font-semibold rounded-md py-2 px-4 w-full disabled:bg-slate-100 disabled:hover:bg-slate-100"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? <ImSpinner8 size={25} className="loading-icon m-auto text-vino-500" /> : 'Ingresar'}
+                  {isSubmitting ? <Spinner size={40} /> : 'Ingresar'}
                 </button>
               </form>
             )}

@@ -34,6 +34,7 @@ export const getAuthOptions = (): AuthOptions => ({
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 días para que la sesión expire
   },
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token }) {
       const dbUser: User | null = await prisma.user.findUnique({ where: { email: token.email ?? 'no-email' } });

@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { toast } from 'react-hot-toast';
-import { ImSpinner8 } from 'react-icons/im';
+import { Spinner } from '@/components/loaders';
 
 const requiredMessage = 'este campo es requerido';
 
@@ -34,17 +34,17 @@ export const SignUp = () => {
     password: 'pass123',
   };
 
-  const [errorMessage, setErrorMessage] = useState(undefined);
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
   const onSubmit = async (values: any) => {
-    try {
-      await authController.createUser(values);
+    console.log('INITIAL VALUES: ', initialValues);
+    const { error } = await authController.createUser(values);
 
+    if (error) {
+      toast.error(error.message);
+      setErrorMessage(error.message);
+    } else {
       toast.success('Usuario creado correctamente!');
-    } catch (error: any) {
-      const message = error.message;
-      toast.error(message);
-      setErrorMessage(message);
     }
   };
 
@@ -195,11 +195,7 @@ export const SignUp = () => {
                   className="bg-vino-500 hover:bg-vino-600 text-white font-semibold rounded-md py-2 px-4 w-full disabled:bg-slate-100 disabled:hover:bg-slate-100"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? (
-                    <ImSpinner8 size={25} className="loading-icon m-auto text-vino-500" />
-                  ) : (
-                    'Registrarse'
-                  )}
+                  {isSubmitting ? <Spinner /> : 'Registrarse'}
                 </button>
               </form>
             )}

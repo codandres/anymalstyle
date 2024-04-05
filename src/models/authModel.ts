@@ -1,36 +1,48 @@
 'use server';
 
 import { CreateUsuarioDto } from '@/dto/auth/CreateUsuarioDto';
+import { CreateUsuarioResponse } from '@/dto/auth/CreateUsuarioResponse';
 import { UsuarioDto } from '@/dto/auth/UsuarioDto';
 import { toUsuarioDto } from '@/mappers/toUsuarioDto';
 import prisma from '@/orm/prisma';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, User as UsuarioDb } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { redirect } from 'next/navigation';
 
 const uniqueConstraintErrorCode = 'P2002';
 
-export const signUpUser = async (usuario: CreateUsuarioDto, redirection: boolean = true): Promise<void> => {
+export const signUpUser = async (
+  usuario: CreateUsuarioDto,
+  redirection: boolean = true,
+): Promise<CreateUsuarioResponse | undefined> => {
   try {
+    console.log('USUARIO EN signUpUser: ', usuario);
+
     const password: string = bcrypt.hashSync(usuario.password, 10);
 
-    await prisma.user.create({
+    const usuarioDb: UsuarioDb = await prisma.user.create({
       data: {
         ...usuario,
         password,
       },
     });
+    console.log('USUARIODB CREADO EN signUpUser: ', usuario);
+
+    if (!redirection) {
+      return { data: toUsuarioDto(usuarioDb) };
+    }
   } catch (error: any) {
+    console.log('ERROR EM SIGNUP: ', error.message);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === uniqueConstraintErrorCode) {
         const field: string = error.meta?.target as string;
-        console.error(`SignUp error: ${error.message}`);
 
-        throw new Error(`${field} ya existe en el sistema`);
+        return { error: { message: `${field} ya existe en el sistema`, code: error.code, data: error.meta } };
       }
     }
+    console.error(`SignUp error: ${error.message}`);
 
-    throw error;
+    return { error: { message: 'Error inesperado al crear usuario' } };
   }
 
   if (redirection) redirect('/signin');
@@ -40,7 +52,7 @@ export const signInEmailPassword = async (email?: string, password?: string): Pr
   try {
     if (!email || !password) return null;
 
-    const usuario: User | null = await prisma.user.findUnique({ where: { email } });
+    const usuario: UsuarioDb | null = await prisma.user.findUnique({ where: { email } });
 
     if (!usuario) {
       throw new Error('Usuario no existe');

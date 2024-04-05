@@ -1,6 +1,6 @@
 'use client';
 
-import { ProductsListLoader } from '@/components/loaders';
+import { Spinner } from '@/components/loaders';
 import { ProductCard } from '@/components/products';
 import { useGetProducts } from '@/hooks/useGetProducts';
 import { User as UserSession } from 'next-auth';
@@ -13,16 +13,12 @@ interface Props {
 export const ProductsList = ({ user }: Props) => {
   const { products, isLoading, error } = useGetProducts();
 
-  if (isLoading) {
-    return <ProductsListLoader />;
-  }
-
   if (error) {
     return <div>Un error inesperado ha occurido</div>;
   }
 
   return (
-    <div className="w-fit">
+    <div className="w-fit h-fit mx-auto">
       <div className="flex justify-end mb-4">
         {user && user.role === 'ADMIN' && (
           <Link href="/products/new">
@@ -32,10 +28,16 @@ export const ProductsList = ({ user }: Props) => {
           </Link>
         )}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-10">
-        {products!.map((product) => (
-          <ProductCard key={product.idProducto} producto={product} />
-        ))}
+      <div>
+        {isLoading ? (
+          <Spinner dog className="h-screen mx-auto size-1/6 -mt-40" />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-10">
+            {products!.map((product) => (
+              <ProductCard key={product.idProducto} producto={product} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
