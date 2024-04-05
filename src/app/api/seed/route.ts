@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'; // Para prevenir que next ejecute la ruta en el build (o sea en modo estático)
+
 import { CreateUsuarioDto } from '@/dto/auth/CreateUsuarioDto';
 import { signUpUser } from '@/models/authModel';
 import prisma from '@/orm/prisma';
@@ -120,5 +122,5 @@ export async function GET() {
   await signUpUser(userAdmin, false);
   await signUpUser(user, false);
 
-  return NextResponse.json({ message: 'Seed Excecuted' });
+  return NextResponse.json({ message: 'Ejecutado' });
 }
