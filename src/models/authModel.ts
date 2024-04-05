@@ -16,8 +16,6 @@ export const signUpUser = async (
   redirection: boolean = true,
 ): Promise<CreateUsuarioResponse | undefined> => {
   try {
-    console.log('USUARIO EN signUpUser: ', usuario);
-
     const password: string = bcrypt.hashSync(usuario.password, 10);
 
     const usuarioDb: UsuarioDb = await prisma.user.create({
@@ -26,13 +24,11 @@ export const signUpUser = async (
         password,
       },
     });
-    console.log('USUARIODB CREADO EN signUpUser: ', usuario);
 
     if (!redirection) {
       return { data: toUsuarioDto(usuarioDb) };
     }
   } catch (error: any) {
-    console.log('ERROR EM SIGNUP: ', error.message);
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === uniqueConstraintErrorCode) {
         const field: string = error.meta?.target as string;

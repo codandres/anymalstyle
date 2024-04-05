@@ -37,7 +37,6 @@ export const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
   const onSubmit = async (values: any) => {
-    console.log('INITIAL VALUES: ', initialValues);
     const { error } = await authController.createUser(values);
 
     if (error) {
