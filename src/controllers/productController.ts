@@ -20,7 +20,7 @@ export class ProductController {
     await updateProduct(product);
   }
 
-  async deleteById(productId: number): Promise<ProductoDto> {
-    return deleteProductById(productId);
+  async deleteById(productId: number): Promise<void> {
+    await deleteProductById(productId);
   }
 }

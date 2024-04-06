@@ -8,8 +8,7 @@ interface Props extends IconBaseProps {
   dog?: boolean;
 }
 
-export const Spinner = ({ ...props }: Props) => {
-  const { dog } = props;
+export const Spinner = ({ dog, ...props }: Props) => {
   return dog ? (
     <PiDogFill size={25} {...props} className={`loading-icon m-auto text-vino-500 ${props.className}`} />
   ) : (

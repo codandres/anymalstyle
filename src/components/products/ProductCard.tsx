@@ -2,22 +2,21 @@
 
 import { ProductController } from '@/controllers/productController';
 import { ProductoDto } from '@/dto/producto/productoDto';
-import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import { FaRegEdit } from 'react-icons/fa';
 import { IoTrashOutline } from 'react-icons/io5';
+import { User as UserSession } from 'next-auth';
 
 interface Props {
+  user?: UserSession;
   producto: ProductoDto;
 }
 
-export const ProductCard = ({ producto }: Props) => {
+export const ProductCard = ({ producto, user }: Props) => {
   const router = useRouter();
-  const session = useSession();
-
-  const user = session.data?.user;
 
   const handleEdit = async () => {
     router.push(`/products/${producto.idProducto}/edit`);
@@ -26,7 +25,10 @@ export const ProductCard = ({ producto }: Props) => {
   const handleDeleteProduct = async () => {
     const productController = new ProductController();
 
+    toast.loading(`Eliminando ${producto.nombre}...`, { id: 'loading' });
     await productController.deleteById(producto.idProducto);
+    toast.remove('loading');
+    toast.success(`${producto.nombre} ha sido eliminado!`, { duration: 40000 });
   };
 
   return (
@@ -42,7 +44,6 @@ export const ProductCard = ({ producto }: Props) => {
         <div className="text-vino-500 font-bold text-xl mb-2">{producto.nombre}</div>
         <p className="text-slate-600 text-base">{producto.descripcion}</p>
         <p className="text-vino-700 text-base font-bold">$ {producto.precio}</p>
-        {/* <p className="text-slate-600 text-base">{producto.id}</p> */}
       </div>
       <div className="flex px-1 py-4 justify-between align-bottom">
         <div className="content-center">
@@ -63,7 +64,6 @@ export const ProductCard = ({ producto }: Props) => {
               onClick={handleDeleteProduct}
             >
               <IoTrashOutline size={20} />
-              {/* Eliminar */}
             </button>
           </div>
         )}

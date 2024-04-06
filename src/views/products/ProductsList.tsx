@@ -1,22 +1,14 @@
-'use client';
-
-import { Spinner } from '@/components/loaders';
 import { ProductCard } from '@/components/products';
-import { useGetProducts } from '@/hooks/useGetProducts';
+import { ProductoDto } from '@/dto/producto/productoDto';
 import { User as UserSession } from 'next-auth';
 import Link from 'next/link';
 
 interface Props {
   user?: UserSession;
+  products?: ProductoDto[];
 }
 
-export const ProductsList = ({ user }: Props) => {
-  const { products, isLoading, error } = useGetProducts();
-
-  if (error) {
-    return <div>Un error inesperado ha occurido</div>;
-  }
-
+export const ProductsList = ({ user, products }: Props) => {
   return (
     <div className="w-fit h-fit mx-auto">
       <div className="flex justify-end mb-4">
@@ -29,15 +21,11 @@ export const ProductsList = ({ user }: Props) => {
         )}
       </div>
       <div>
-        {isLoading ? (
-          <Spinner dog className="h-screen mx-auto size-1/6 -mt-40" />
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-10">
-            {products!.map((product) => (
-              <ProductCard key={product.idProducto} producto={product} />
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-10">
+          {products!.map((product) => (
+            <ProductCard key={product.idProducto} producto={product} user={user} />
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -7,7 +7,8 @@ import * as yup from 'yup';
 import { ProductController } from '@/controllers/productController';
 import { CreateProductoDto } from '@/dto/producto/createProductoDto';
 import { ProductoDto } from '@/dto/producto/productoDto';
-import { ProductDetailLoader, Spinner } from '@/components/loaders';
+import { Spinner } from '@/components/loaders';
+import toast from 'react-hot-toast';
 
 interface Props {
   productId?: number;
@@ -86,6 +87,7 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
 
   const onSubmit = async (values: any) => {
     try {
+      toast.loading(`${isEditing ? 'Actualizando' : 'Guardando'} producto...`, { id: 'save' });
       let imageRaw: string | undefined;
 
       if (image) {
@@ -105,8 +107,12 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
 
       if (isEditing) {
         await productController.update({ idProducto: productId!, ...product });
+        toast.remove('save');
+        toast.success(`${product.nombre} actualizado!`, { duration: 4000 });
       } else {
         await productController.create(product);
+        toast.success(`${product.nombre} guardado correctamente!`, { duration: 4000 });
+        toast.remove('save');
       }
     } catch (error: any) {
       console.error(error.message);

@@ -6,6 +6,7 @@ import { ProductoDto } from '@/dto/producto/productoDto';
 import { toProductoDto } from '@/mappers/toProductoDto';
 import prisma from '@/orm/prisma';
 import { Prisma, Producto } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import * as yup from 'yup';
 
@@ -120,10 +121,10 @@ export async function updateProduct(productDto: UpdateProductoDto): Promise<void
   redirect('/products');
 }
 
-export async function deleteProductById(idProducto: number): Promise<ProductoDto> {
+export async function deleteProductById(idProducto: number): Promise<void> {
   await getProduct(idProducto);
 
   await prisma.producto.delete({ where: { idProducto } });
 
-  redirect('/products');
+  revalidatePath('/products');
 }
