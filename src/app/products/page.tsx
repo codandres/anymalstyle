@@ -2,7 +2,7 @@ import { ProductController } from '@/controllers/productController';
 import { getUserSession } from '@/helpers/auth/getUserSession';
 import { ProductsList } from '@/views/products';
 import { Suspense } from 'react';
-import { Spinner } from '@/components/loaders';
+import { ProductsListLoader } from '@/components/loaders';
 
 export default async function ProductsPage() {
   const user = await getUserSession();
@@ -11,7 +11,7 @@ export default async function ProductsPage() {
 
   return (
     <>
-      <Suspense fallback={<Spinner dog className="h-screen mx-auto size-1/6 -mt-40" />}>
+      <Suspense fallback={<ProductsListLoader />}>
         <ProductsList user={user} products={products} />
       </Suspense>
     </>
