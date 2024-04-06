@@ -6,7 +6,7 @@ const getImageBase64Data = async (image: Buffer | null): Promise<string | undefi
   if (!image) return;
 
   const type: ImageTypeResult | undefined = await imageType(image);
-  const mime = type?.mime || 'image/jpeg';
+  const mime = type?.mime || 'image/svg+xml'; // 'image/jpeg';
 
   return `data:${mime};base64,${image.toString('base64')}`;
 };
@@ -20,4 +20,6 @@ export const toProductoDto = async (product: Producto): Promise<ProductoDto> => 
   imagen: await getImageBase64Data(product.imagen),
   idMarca: Number(product.idMarca),
   idTipo: Number(product.idTipo),
+  tipo: product?.tipo?.nombre,
+  marca: product?.marca?.nombre,
 });

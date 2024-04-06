@@ -4,8 +4,18 @@ import { CreateUsuarioDto } from '@/dto/auth/CreateUsuarioDto';
 import { signUpUser } from '@/models/authModel';
 import prisma from '@/orm/prisma';
 import { NextResponse } from 'next/server';
+import { Faker, es, es_MX } from '@faker-js/faker';
+
+const base64ToBuffer = (base64String: string): Buffer => {
+  const base64Data = base64String.replace(/^data:image\/.*?;base64,/, ''); // Ej: data:image/svg+xml;base64,PHN2ZyB4bW
+  return Buffer.from(base64Data, 'base64');
+};
 
 export async function GET() {
+  const faker = new Faker({
+    locale: [es_MX, es],
+  });
+
   await prisma.marca.deleteMany();
   await prisma.tipoProducto.deleteMany();
   await prisma.producto.deleteMany();
@@ -13,86 +23,28 @@ export async function GET() {
   await prisma.user.deleteMany();
 
   const marcas = await prisma.marca.createMany({
-    data: [
-      { idMarca: 1, nombre: 'Miwi' },
-      { idMarca: 2, nombre: 'Foki' },
-      { idMarca: 3, nombre: 'Pepi' },
-      { idMarca: 4, nombre: 'Plopi' },
-      { idMarca: 5, nombre: 'Servo' },
-    ],
+    data: Array.from({ length: 20 }).map((_, i) => ({ idMarca: i + 1, nombre: faker.commerce.department() })),
   });
 
   console.log('marcas :>> ', marcas);
 
   const tipos = await prisma.tipoProducto.createMany({
-    data: [
-      { idTipoProducto: 1, nombre: 'Medicamento' },
-      { idTipoProducto: 2, nombre: 'Juguete' },
-      { idTipoProducto: 3, nombre: 'Ropa' },
-    ],
+    data: Array.from({ length: 20 }).map((_, i) => ({ idTipoProducto: i + 1, nombre: faker.commerce.product() })),
   });
 
-  console.log('tipos :>> ', tipos);
-
   await prisma.producto.createMany({
-    data: [
-      {
-        nombre: 'Producto 1',
-        descripcion: 'descripcion del producto 1',
-        cantidad: 10,
-        precio: 100,
-        idMarca: 2,
-        idTipo: 2,
-      },
-      {
-        nombre: 'Producto 2',
-        descripcion: 'descripcion del producto 1',
-        cantidad: 20,
-        precio: 200,
-        idMarca: 1,
-        idTipo: 3,
-      },
-      {
-        nombre: 'Producto 3',
-        descripcion: 'descripcion del producto 1',
-        cantidad: 20,
-        precio: 200,
-        idMarca: 1,
-        idTipo: 3,
-      },
-      {
-        nombre: 'Producto 4',
-        descripcion: 'descripcion del producto 1',
-        cantidad: 20,
-        precio: 11800,
-        idMarca: 2,
-        idTipo: 3,
-      },
-      {
-        nombre: 'Producto 5',
-        descripcion: 'descripcion del producto 1',
-        cantidad: 20,
-        precio: 5600,
-        idMarca: 1,
-        idTipo: 3,
-      },
-      {
-        nombre: 'Producto 6',
-        descripcion: 'descripcion del producto 1',
-        cantidad: 20,
-        precio: 8200,
-        idMarca: 3,
-        idTipo: 1,
-      },
-      {
-        nombre: 'Producto 7',
-        descripcion: 'descripcion del producto 1',
-        cantidad: 20,
-        precio: 4500,
-        idMarca: 2,
-        idTipo: 2,
-      },
-    ],
+    data: Array.from({ length: 20 })
+      .map((_, i) => ({
+        idProducto: i + 1,
+        nombre: faker.commerce.product(),
+        descripcion: faker.lorem.text(),
+        cantidad: faker.number.int({ min: 1, max: 2000 }),
+        precio: faker.commerce.price({ min: 500, max: 1000000 }),
+        idMarca: faker.number.int({ min: 1, max: marcas.count }),
+        idTipo: faker.number.int({ min: 1, max: tipos.count }),
+        imagen: faker.image.dataUri({ width: 640, height: 480, type: 'svg-base64', color: faker.color.rgb() }),
+      }))
+      .map((producto) => ({ ...producto, imagen: base64ToBuffer(producto.imagen) })),
   });
 
   const userAdmin: CreateUsuarioDto = {

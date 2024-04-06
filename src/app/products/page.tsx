@@ -1,8 +1,12 @@
+import { Suspense, lazy } from 'react';
+
 import { ProductController } from '@/controllers/productController';
 import { getUserSession } from '@/helpers/auth/getUserSession';
-import { ProductsList } from '@/views/products';
-import { Suspense } from 'react';
 import { ProductsListLoader } from '@/components/loaders';
+
+const ProductsList = lazy(() =>
+  import('../../views/products/ProductsList').then((mod) => ({ default: mod.ProductsList })),
+);
 
 export default async function ProductsPage() {
   const user = await getUserSession();

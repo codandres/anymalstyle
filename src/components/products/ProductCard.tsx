@@ -42,8 +42,11 @@ export const ProductCard = ({ producto, user }: Props) => {
       />
       <div className="px-1 py-4">
         <div className="text-vino-500 font-bold text-xl mb-2">{producto.nombre}</div>
-        <p className="text-slate-600 text-base">{producto.descripcion}</p>
+        <p className="text-slate-600 text-base mb-2">{producto.descripcion}</p>
+        <p className="text-slate-600 text-base">Tipo: {producto.tipo}</p>
+        <p className="text-slate-600 text-base mb-4">Marca: {producto.marca}</p>
         <p className="text-vino-700 text-base font-bold">$ {producto.precio}</p>
+        <p className="text-slate-600 text-base">en stock: {producto.cantidad}</p>
       </div>
       <div className="flex px-1 py-4 justify-between align-bottom">
         <div className="content-center">

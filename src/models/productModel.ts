@@ -32,7 +32,10 @@ const productoUpdateSchema: yup.Schema = yup.object({
 });
 
 const getProduct = async (idProducto: number): Promise<Producto> => {
-  const producto: Producto | null = await prisma.producto.findUnique({ where: { idProducto } });
+  const producto: Producto | null = await prisma.producto.findUnique({
+    where: { idProducto },
+    include: { tipo: true, marca: true },
+  });
 
   if (!producto) throw new Error(`No producto with id ${idProducto} found`);
 
@@ -56,7 +59,11 @@ export async function getAllProducts(offset: number, limit: number): Promise<Pro
     throw new Error('limit must be a number');
   }
 
-  const productos: Producto[] = await prisma.producto.findMany({ skip: offset, take: limit });
+  const productos: Producto[] = await prisma.producto.findMany({
+    skip: offset,
+    take: limit,
+    include: { tipo: true, marca: true },
+  });
 
   const result: Promise<ProductoDto>[] = [];
 
