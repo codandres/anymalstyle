@@ -11,7 +11,7 @@ const getImageBase64Data = async (image: Buffer | null): Promise<string | undefi
   return `data:${mime};base64,${image.toString('base64')}`;
 };
 
-export const toProductoDto = async (product: Producto): Promise<ProductoDto> => ({
+export const toProductoDto = async (product: Producto & { tipo?: any; marca?: any }): Promise<ProductoDto> => ({
   idProducto: Number(product.idProducto),
   cantidad: Number(product.cantidad),
   descripcion: product.descripcion,
