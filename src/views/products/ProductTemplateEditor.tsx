@@ -9,6 +9,10 @@ import { CreateProductoDto } from '@/dto/producto/createProductoDto';
 import { ProductoDto } from '@/dto/producto/productoDto';
 import { Spinner } from '@/components/loaders';
 import toast from 'react-hot-toast';
+import { MarcaDto } from '@/dto/marca/marcaDto';
+import { TipoProductoDto } from '@/dto/tipoProducto/tipoProductoDto';
+import { useGetMarcas } from '@/hooks/useGetMarcas';
+import { useGetTipoProductos } from '@/hooks/useGetTipoProductos';
 
 interface Props {
   productId?: number;
@@ -19,9 +23,9 @@ interface ProductoForm {
   descripcion: string;
   cantidad: string | number;
   precio: string | number;
-  imagen: string;
-  idTipo: string | number;
-  idMarca: string | number;
+  imagen?: string;
+  idTipo?: string | number;
+  idMarca?: string | number;
 }
 
 const requiredMessage = 'este campo es requerido';
@@ -37,6 +41,7 @@ const formValidations = yup.object({
 });
 
 export const ProductTemplateEditor = ({ productId }: Props) => {
+  console.log('foo: ', productId);
   const isEditing: boolean = !!productId;
   const [product, setProducto] = useState<ProductoDto | undefined>(undefined);
   const [image, setImage] = useState<Blob | null>(null);
@@ -45,6 +50,9 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const productController = useMemo(() => new ProductController(), []);
+
+  const { marcas, isLoading: loadingMarcas, error: errorMarcas } = useGetMarcas();
+  const { tipoProductos, isLoading: loadingTipoProductos, error: errorTipoProductos } = useGetTipoProductos();
 
   useEffect(() => {
     if (isEditing) {
@@ -80,8 +88,8 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
       cantidad: 30,
       precio: 3500,
       imagen: '',
-      idTipo: 3,
-      idMarca: 2,
+      idTipo: undefined,
+      idMarca: undefined,
     };
   }
 
@@ -193,17 +201,24 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
                         <label htmlFor="idTipo" className="block text-gray-600">
                           Tipo
                         </label>
-                        <select
-                          name="idTipo"
-                          className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-vino-500"
-                          onChange={handleChange}
-                          value={values.idTipo}
-                        >
-                          <option value="Seleccionar">Seleccionar</option>
-                          <option value={1}>Medicamento</option>
-                          <option value={2}>Comida</option>
-                          <option value={3}>Juguete</option>
-                        </select>
+                        {loadingTipoProductos ? (
+                          <Spinner className="text-gray-500" />
+                        ) : (
+                          <select
+                            name="idTipo"
+                            className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-vino-500"
+                            onChange={handleChange}
+                            value={values.idTipo}
+                            disabled={loadingTipoProductos}
+                          >
+                            <option value={undefined}>Seleccionar</option>
+                            {tipoProductos?.map((tipo: TipoProductoDto) => (
+                              <option key={tipo.idTipoProducto} value={tipo.idTipoProducto}>
+                                {tipo.nombre}
+                              </option>
+                            ))}
+                          </select>
+                        )}
                         <div className="text-vino-700">{errors.idTipo && touched.idTipo && errors.idTipo}</div>
                       </div>
                       <div className="w-2/4">
@@ -228,17 +243,24 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
                         <label htmlFor="idMarca" className="block text-gray-600">
                           Marca
                         </label>
-                        <select
-                          name="idMarca"
-                          className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-vino-500"
-                          onChange={handleChange}
-                          value={values.idMarca}
-                        >
-                          <option value="Seleccionar">Seleccionar</option>
-                          <option value={1}>Medicamento</option>
-                          <option value={2}>Comida</option>
-                          <option value={3}>Juguete</option>
-                        </select>
+                        {loadingMarcas ? (
+                          <Spinner className="text-gray-500" />
+                        ) : (
+                          <select
+                            name="idMarca"
+                            className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-vino-500"
+                            onChange={handleChange}
+                            value={values.idMarca}
+                            disabled={loadingMarcas}
+                          >
+                            <option value={undefined}>Seleccionar</option>
+                            {marcas?.map((marca: MarcaDto) => (
+                              <option key={marca.idMarca} value={marca.idMarca}>
+                                {marca.nombre}
+                              </option>
+                            ))}
+                          </select>
+                        )}
                         <div className="text-vino-700">{errors.idMarca && touched.idMarca && errors.idMarca}</div>
                       </div>
                       <div className="w-2/4">
