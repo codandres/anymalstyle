@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import { FaRegEdit } from 'react-icons/fa';
 import { IoTrashOutline } from 'react-icons/io5';
 import { User as UserSession } from 'next-auth';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Spinner } from '../loaders';
 
 interface Props {
