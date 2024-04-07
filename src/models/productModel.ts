@@ -15,8 +15,8 @@ const productoCreateSchema: yup.Schema = yup.object({
   precio: yup.number().required().min(0),
   cantidad: yup.number().required().min(0),
   descripcion: yup.string().optional(),
-  idTipo: yup.number().required(),
-  idMarca: yup.number().required(),
+  idTipo: yup.number().optional(),
+  idMarca: yup.number().optional(),
   imagen: yup.mixed<Buffer>().optional(),
 });
 
@@ -88,8 +88,8 @@ export async function createProduct(productDto: CreateProductoDto): Promise<void
       cantidad: payload.cantidad,
       descripcion: payload.descripcion,
       imagen: imageRaw,
-      tipo: { connect: { idTipoProducto: payload.idTipo! } },
-      marca: { connect: { idMarca: payload.idMarca! } },
+      tipo: payload.idTipo ? { connect: { idTipoProducto: payload.idTipo } } : undefined,
+      marca: payload.idMarca ? { connect: { idMarca: payload.idMarca } } : undefined,
     };
 
     await prisma.producto.create({ data: product });
@@ -116,8 +116,8 @@ export async function updateProduct(productDto: UpdateProductoDto): Promise<void
       cantidad: payload.cantidad,
       descripcion: payload.descripcion,
       imagen: imageRaw,
-      tipo: { connect: { idTipoProducto: payload.idTipo! } },
-      marca: { connect: { idMarca: payload.idMarca! } },
+      tipo: payload.idTipo ? { connect: { idTipoProducto: payload.idTipo } } : undefined,
+      marca: payload.idMarca ? { connect: { idMarca: payload.idMarca } } : undefined,
     };
 
     await prisma.producto.update({ data: product, where: { idProducto: payload.idProducto } });

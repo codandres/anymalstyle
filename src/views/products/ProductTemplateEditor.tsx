@@ -13,6 +13,7 @@ import { MarcaDto } from '@/dto/marca/marcaDto';
 import { TipoProductoDto } from '@/dto/tipoProducto/tipoProductoDto';
 import { useGetMarcas } from '@/hooks/useGetMarcas';
 import { useGetTipoProductos } from '@/hooks/useGetTipoProductos';
+import Dinero from 'dinero.js';
 
 interface Props {
   productId?: number;
@@ -41,7 +42,6 @@ const formValidations = yup.object({
 });
 
 export const ProductTemplateEditor = ({ productId }: Props) => {
-  console.log('foo: ', productId);
   const isEditing: boolean = !!productId;
   const [product, setProducto] = useState<ProductoDto | undefined>(undefined);
   const [image, setImage] = useState<Blob | null>(null);
@@ -109,8 +109,8 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
         cantidad: parseInt(values.cantidad),
         precio: Number(values.precio),
         imagen: imageRaw,
-        idTipo: parseInt(values.idTipo),
-        idMarca: parseInt(values.idMarca),
+        idTipo: values.idTipo ? parseInt(values.idTipo) : undefined,
+        idMarca: values.idMarca ? parseInt(values.idMarca) : undefined,
       };
 
       if (isEditing) {
@@ -123,6 +123,8 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
         toast.remove('save');
       }
     } catch (error: any) {
+      toast.remove('save');
+      toast.error('Error desconocido al intentar guardar, inténtalo nuevamente.', { duration: 4000 });
       console.error(error.message);
     }
   };
@@ -161,7 +163,7 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
 
             <div className="py-4">
               <Formik initialValues={initialValues} validationSchema={formValidations} onSubmit={onSubmit}>
-                {({ values, errors, touched, handleSubmit, handleChange, isSubmitting }) => (
+                {({ values, errors, touched, handleSubmit, handleChange, isSubmitting, setFieldValue }) => (
                   <form onSubmit={handleSubmit}>
                     <div className="mb-2">
                       <label htmlFor="nombre" className="block text-gray-600">
@@ -227,13 +229,18 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
                           <span className="text-vino-700">*</span>
                         </label>
                         <input
-                          type="number"
+                          type="text"
                           id="precio"
                           name="precio"
                           className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-vino-500"
                           autoComplete="off"
-                          onChange={handleChange}
-                          value={values.precio}
+                          onChange={(event) => {
+                            const value = event.target.value;
+                            const number = value.replace(/\$|,|\./g, '');
+
+                            setFieldValue('precio', parseInt(number));
+                          }}
+                          value={Dinero({ amount: Number(values.precio || 0), precision: 0 }).toFormat('$0,0')}
                         />
                         <div className="text-vino-700">{errors.precio && touched.precio && errors.precio}</div>
                       </div>
@@ -269,13 +276,18 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
                           <span className="text-vino-700">*</span>
                         </label>
                         <input
-                          type="number"
+                          type="text"
                           id="cantidad"
                           name="cantidad"
                           className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-vino-500"
                           autoComplete="off"
-                          onChange={handleChange}
-                          value={values.cantidad}
+                          onChange={(event) => {
+                            const value = event.target.value;
+                            const number = value.replace(/\$|,|\./g, '');
+
+                            setFieldValue('cantidad', parseInt(number));
+                          }}
+                          value={Dinero({ amount: Number(values.cantidad || 0), precision: 0 }).toFormat('0,0')}
                         />
                         <div className="text-vino-700">{errors.cantidad && touched.cantidad && errors.cantidad}</div>
                       </div>
