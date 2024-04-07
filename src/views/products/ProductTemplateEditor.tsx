@@ -185,8 +185,7 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
                       <label htmlFor="descripcion" className="block text-gray-600">
                         Descripción
                       </label>
-                      <input
-                        type="text"
+                      <textarea
                         id="descripcion"
                         name="descripcion"
                         className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-vino-500"
