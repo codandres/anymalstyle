@@ -35,7 +35,7 @@ const formValidations = yup.object({
   nombre: yup.string().required(requiredMessage),
   precio: yup.number().required(requiredMessage).min(1, 'Precio mínimo: 500'),
   cantidad: yup.number().required(requiredMessage).min(1, 'Unidades mínima: 1'),
-  descripcion: yup.string().optional().max(255, 'Descripción de máximo 255 caracteres'),
+  descripcion: yup.string().optional().max(1000, 'Descripción de máximo 1000 caracteres'),
   idTipo: yup.number().optional(),
   idMarca: yup.number().optional(),
   imagen: yup.string().optional(),

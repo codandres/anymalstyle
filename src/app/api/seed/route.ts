@@ -37,7 +37,7 @@ export async function GET() {
       .map((_, i) => ({
         idProducto: i + 1,
         nombre: faker.commerce.product(),
-        descripcion: faker.lorem.words(10),
+        descripcion: faker.lorem.sentences({ min: 3, max: 20 }),
         cantidad: faker.number.int({ min: 1, max: 2000 }),
         precio: faker.commerce.price({ min: 500, max: 1000000 }),
         idMarca: faker.number.int({ min: 1, max: marcas.count }),

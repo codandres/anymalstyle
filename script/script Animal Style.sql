@@ -17,7 +17,7 @@ CREATE TABLE especialista(
 id_especialista BIGINT AUTO_INCREMENT PRIMARY KEY,
 nombre VARCHAR(200) NOT NULL,
 especialidad VARCHAR(30) NOT NULL,
-descripcion VARCHAR(255) NOT NULL,
+descripcion TEXT NOT NULL,
 contacto VARCHAR(200) NOT NULL);
 
 CREATE TABLE ciudad(
@@ -34,7 +34,7 @@ CREATE TABLE insumo(
 id_insumo BIGINT AUTO_INCREMENT PRIMARY KEY,
 nombre VARCHAR(200) NOT NULL,
 tipo VARCHAR(50) NOT NULL,
-descripcion VARCHAR(255));
+descripcion TEXT);
 
 CREATE TABLE sucursal_virtual(
 id_sucursal_virtual BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -46,7 +46,7 @@ id_inventario BIGINT AUTO_INCREMENT PRIMARY KEY,
 cantidad INT NOT NULL,
 tipo VARCHAR(50) NOT NULL,
 precio DECIMAL NOT NULL,
-descripcion VARCHAR(255) NOT NULL);
+descripcion TEXT NOT NULL);
 
 CREATE TABLE usuario(
 id_usuario VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
@@ -100,7 +100,7 @@ id_producto BIGINT AUTO_INCREMENT PRIMARY KEY,
 nombre VARCHAR(150) NOT NULL,
 precio DECIMAL NOT NULL,
 cantidad INT NOT NULL,
-descripcion VARCHAR(255),
+descripcion TEXT,
 imagen LONGBLOB
 );
 
@@ -108,7 +108,7 @@ CREATE TABLE promocion(
 id_promocion BIGINT AUTO_INCREMENT PRIMARY KEY,
 nombre VARCHAR(150) NOT NULL,
 descuento DECIMAL NOT NULL,
-descripcion VARCHAR(255) NOT NULL,
+descripcion TEXT NOT NULL,
 fecha_inicio DATE NOT NULL,
 fecha_fin DATE NOT NULL);
 
@@ -148,7 +148,7 @@ CREATE TABLE foro(
 id_foro BIGINT AUTO_INCREMENT PRIMARY KEY,
 nombre_foro VARCHAR(200) NOT NULL,
 categoria VARCHAR(30) NOT NULL,
-descripcion VARCHAR(255) NOT NULL,
+descripcion TEXT NOT NULL,
 fecha_creacion DATE NOT NULL);
 
 CREATE TABLE resena(
