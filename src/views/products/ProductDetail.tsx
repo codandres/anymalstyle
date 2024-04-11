@@ -1,11 +1,10 @@
 'use client';
 
 import { Spinner } from '@/components/loaders';
-import { Star } from '@/components/products';
+import { ProductRating } from '@/components/products';
 
 import { useGetProductById } from '@/hooks/useGetProductById';
 import Image from 'next/image';
-import Link from 'next/link';
 
 interface Props {
   productId: number;
@@ -23,57 +22,71 @@ export const ProductDetail = ({ productId }: Props) => {
       {isLoading ? (
         <Spinner dog className="h-screen mx-auto size-1/6 -mt-96" />
       ) : (
-        <div className="flex justify-items-center bg-white shadow-md rounded-lg">
+        <div className="mx-auto md:w-[100%] lg:w-[100%] xl:w-[95%] 2xl:w-[70%] flex justify-items-center bg-white shadow-md rounded-lg">
           <div className="w-1/2">
-            <Link href="#">
-              <Image
-                className="rounded-t-lg p-8"
-                width={800}
-                height={800}
-                src={product?.imagen || '/images/no-image-found.jpg'}
-                alt="product image"
-              />
-            </Link>
+            <Image
+              className="rounded-t-lg p-8"
+              width={800}
+              height={800}
+              src={product?.imagen || '/images/no-image-found.jpg'}
+              alt="product image"
+            />
           </div>
-          <div className="divide-y divide-dashed divide-vino-700 px-5 pb-5 w-1/2 p-8">
-            <div id="firstSection">
-              <Link href="#">
-                <h3 className="text-gray-900 font-semibold text-xl tracking-tight">
-                  {/* Apple Watch Series 7 GPS, Aluminium Case, Starlight Sport */}
-                  {product?.nombre}
-                </h3>
-              </Link>
-              <div className="flex items-center mt-2.5 mb-5">
-                <Star />
-                <Star />
-                <Star />
-                <Star />
-                <Star />
-                <span className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">5.0</span>
+          <div className="w-1/2 p-8">
+            <div className="divide-y divide-dashed divide-vino-700">
+              <div className="pb-5 mb-5">
+                <h3 className="text-gray-900 font-semibold text-5xl tracking-tight">{product?.nombre}</h3>
+                <ProductRating productId={productId} showPromedio showTotalResenas />
+
+                {/* <div className="md:max-w-40 sm:max-w-32">{product?.descripcion}</div> */}
               </div>
-
-              <div>{product?.descripcion}</div>
-            </div>
-            {/* <div id="divider1" className="divide-current h-3 bg-orange-400 text-cyan-500"></div> */}
-
-            <div id="secondSection" className="flex items-center justify-between py-8">
-              <span className="text-3xl font-bold text-gray-900">${product?.precio}</span>
-              <Link
-                href="#"
-                className="text-white bg-vino-500 hover:bg-vino-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-              >
-                Add to cart
-              </Link>
-            </div>
-
-            <div id="thirdSection" className="flex items-center justify-between py-8">
-              <span className="text-3xl font-bold text-gray-900">$599</span>
-              <Link
-                href="#"
-                className="text-white bg-vino-500 hover:bg-vino-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-              >
-                Add to cart
-              </Link>
+              <div className="flex items-center justify-between py-8 mb-2">
+                <div>
+                  <span className="text-3xl font-bold text-gray-900">${product?.precio.toLocaleString()}</span>
+                </div>
+                <div className="w-1/2">
+                  <form>
+                    <div className="h-fit flex justify-between">
+                      <div>
+                        <label htmlFor="cantidad" className="block text-gray-600 mb-2">
+                          Cantidad
+                        </label>
+                        <input
+                          type="number"
+                          id="cantidad"
+                          min={1}
+                          max={product?.cantidad}
+                          name="cantidad"
+                          className="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:border-vino-500"
+                          autoComplete="off"
+                          defaultValue={1}
+                        />
+                        {/* <div className="text-vino-700">{errors.cantidad && touched.cantidad && errors.cantidad}</div> */}
+                      </div>
+                      <div className="self-end">
+                        <button
+                          type="button"
+                          className="h-fit text-white bg-vino-500 hover:bg-vino-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                        >
+                          Añadir al Carrito
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div className="pt-8">
+                <div className="flex justify-evenly my-10">
+                  <p>
+                    <span className="font-bold text-vino-600">Tipo:</span> {product?.tipo}
+                  </p>
+                  <p>
+                    <span className="font-bold text-vino-600">Marca:</span> {product?.marca}
+                  </p>
+                </div>
+                <p className="font-bold text-vino-600">Descripción:</p>
+                <p>{product?.descripcion}</p>
+              </div>
             </div>
           </div>
         </div>

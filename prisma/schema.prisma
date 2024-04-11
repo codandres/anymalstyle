@@ -235,6 +235,7 @@ model Producto {
 
   carritos Carrito[]
   ofertas  Oferta[]
+  Resenas  Resena[]
 
   @@map("producto")
 }
@@ -265,14 +266,17 @@ model Proveedor {
 }
 
 model Resena {
-  idResena    BigInt   @id @default(autoincrement()) @map("id_resena")
-  comentario  String   @map("comentario") @db.VarChar(255)
-  puntuacion  Int      @map("puntuacion")
-  fechaResena DateTime @map("fecha_resena") @db.Date
-  idUsuario   String?  @map("id_usuario") @db.VarChar(36)
-  usuario     User?    @relation(fields: [idUsuario], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "reseña_ibfk_1")
+  idResena    BigInt    @id @default(autoincrement()) @map("id_resena")
+  comentario  String    @map("comentario") @db.VarChar(255)
+  puntuacion  Decimal   @map("puntuacion") @db.Decimal(2, 1)
+  fechaResena DateTime  @map("fecha_resena") @db.Date
+  idUsuario   String    @map("id_usuario") @db.VarChar(36)
+  idProducto  BigInt    @map("id_producto")
+  usuario     User?     @relation(fields: [idUsuario], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "reseña_ibfk_1")
+  producto    Producto? @relation(fields: [idProducto], references: [idProducto], onDelete: Cascade, onUpdate: NoAction, map: "reseña_ibfk_2")
 
   @@index([idUsuario], map: "id_usuario")
+  @@index([idProducto], map: "id_producto")
   @@map("resena")
 }
 

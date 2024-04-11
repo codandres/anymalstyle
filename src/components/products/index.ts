@@ -1,2 +1,2 @@
 export { ProductCard } from './ProductCard';
-export { Star } from './Star';
+export { ProductRating } from './ProductRating';

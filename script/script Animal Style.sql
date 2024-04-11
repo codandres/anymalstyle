@@ -154,7 +154,7 @@ fecha_creacion DATE NOT NULL);
 CREATE TABLE resena(
 id_resena BIGINT AUTO_INCREMENT PRIMARY KEY,
 comentario VARCHAR(255) NOT NULL,
-puntuacion INT NOT NULL,
+puntuacion DECIMAL(2, 1) NOT NULL,
 fecha_resena DATE NOT NULL);
 
 -- RELACION ENTIDADES 1 a N / 1 a 1
@@ -245,10 +245,19 @@ ALTER TABLE cita
 ADD FOREIGN KEY(id_paciente) REFERENCES paciente(id_paciente) ON DELETE CASCADE;
 
 ALTER TABLE resena
-ADD id_usuario VARCHAR(36);
+ADD id_usuario VARCHAR(36) NOT NULL;
 
 ALTER TABLE resena
 ADD FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario) ON DELETE CASCADE;
+
+ALTER TABLE resena
+ADD id_producto BIGINT NOT NULL;
+
+ALTER TABLE resena
+ADD FOREIGN KEY (id_producto) REFERENCES producto(id_producto) ON DELETE CASCADE;
+
+ALTER TABLE resena
+ADD UNIQUE `unique_resena`(`id_usuario`, `id_producto`);
 
 ALTER TABLE sucursal
 ADD id_sucursal_virtual BIGINT;
@@ -335,3 +344,9 @@ CREATE INDEX provider_id
 
 CREATE INDEX user_id
   ON cuenta(id_usuario);
+
+CREATE INDEX resena_index 
+  ON resena(id_usuario, id_producto);
+
+CREATE INDEX resena_index_producto 
+  ON resena(id_producto);

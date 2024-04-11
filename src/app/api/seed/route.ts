@@ -5,6 +5,7 @@ import { signUpUser } from '@/models/authModel';
 import prisma from '@/orm/prisma';
 import { NextResponse } from 'next/server';
 import { Faker, es, es_MX } from '@faker-js/faker';
+import bcrypt from 'bcryptjs';
 
 const base64ToBuffer = (base64String: string): Buffer => {
   const base64Data = base64String.replace(/^data:image\/.*?;base64,/, ''); // Ej: data:image/svg+xml;base64,PHN2ZyB4bW
@@ -21,6 +22,7 @@ export async function GET() {
   await prisma.producto.deleteMany();
   await prisma.account.deleteMany();
   await prisma.user.deleteMany();
+  await prisma.resena.deleteMany();
 
   const marcas = await prisma.marca.createMany({
     data: Array.from({ length: 20 }).map((_, i) => ({ idMarca: i + 1, nombre: faker.commerce.department() })),
@@ -47,12 +49,50 @@ export async function GET() {
       .map((producto) => ({ ...producto, imagen: base64ToBuffer(producto.imagen) })),
   });
 
+  const rolesProbability: string[] = [
+    'ADMIN',
+    'ADMIN',
+    'ADMIN',
+    'ADMIN',
+    'ADMIN',
+    'ADMIN',
+    'ADMIN',
+    'USER',
+    'USER',
+    'USER',
+  ];
+
+  await prisma.user.createMany({
+    data: Array.from({ length: 50 }).map((_, i) => {
+      const nombre = faker.person.firstName();
+      const apellido = faker.person.lastName();
+
+      return {
+        nombre,
+        apellido,
+        cedula: faker.number.bigInt({ min: 1000000000, max: 1999999999 }),
+        // email: faker.internet.email({
+        //   firstName: nombre,
+        //   lastName: apellido,
+        //   allowSpecialCharacters: true,
+        //   provider: 'mail.com',
+        // }),
+        email: `${i + 1}@m.com`,
+        password: bcrypt.hashSync('123', 10),
+        usuario: faker.internet.userName({ firstName: nombre, lastName: apellido }),
+        role: i === 0 ? 'ADMIN' : rolesProbability[Math.floor(Math.random() * 10)],
+        telefono: faker.number.bigInt({ min: 3000000000, max: 3009099999 }),
+        direccion: faker.location.streetAddress(),
+      };
+    }),
+  });
+
   const userAdmin: CreateUsuarioDto = {
     nombre: 'Juan',
     apellido: 'Perez',
-    cedula: 10000000,
+    cedula: 1000000,
     email: 'admin@mail.com',
-    password: 'pass123',
+    password: '123',
     usuario: 'admin',
     role: 'ADMIN',
     telefono: 3000000000,
@@ -62,9 +102,9 @@ export async function GET() {
   const user: CreateUsuarioDto = {
     nombre: 'Andrés',
     apellido: 'Posada',
-    cedula: 10000001,
+    cedula: 1000001,
     email: 'user@mail.com',
-    password: 'pass123',
+    password: '123',
     usuario: 'user',
     role: 'USER',
     telefono: 3000000001,
@@ -73,6 +113,33 @@ export async function GET() {
 
   await signUpUser(userAdmin, false);
   await signUpUser(user, false);
+
+  const users = await prisma.user.findMany({ select: { id: true } });
+  const products = await prisma.producto.findMany({ select: { idProducto: true } });
+
+  console.log('users :>> ', users.length);
+  console.log('products :>> ', products.length);
+
+  const puntuacionRangeProbability: number[] = [
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1.5, 2, 2.5, 3, 3.5, 3.5, 3.5, 3.5, 4, 4.5, 5, 4, 4.5, 5, 4, 4.5, 5, 4, 4.5, 5, 4, 4.5,
+    5, 4, 4.5, 5, 4, 4.5, 5, 5, 5, 5,
+  ];
+
+  const res = await prisma.resena.createMany({
+    data: users
+      .map((user) =>
+        products.map((product) => ({
+          idUsuario: user.id,
+          idProducto: Number(product.idProducto),
+          puntuacion: puntuacionRangeProbability[Math.floor(Math.random() * puntuacionRangeProbability.length)],
+          comentario: faker.lorem.sentences({ min: 1, max: 3 }),
+          fechaResena: faker.date.between({ from: '2020-01-01T00:00:00.000Z', to: '2025-01-01T00:00:00.000Z' }),
+        })),
+      )
+      .flat(),
+  });
+
+  console.log('Reseñas creadas :>> ', res);
 
   return NextResponse.json({ message: 'Ejecutado' });
 }

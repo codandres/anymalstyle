@@ -11,6 +11,7 @@ import { IoTrashOutline } from 'react-icons/io5';
 import { User as UserSession } from 'next-auth';
 import { useMemo, useState } from 'react';
 import { Spinner } from '../loaders';
+import { ProductRating } from './ProductRating';
 
 interface Props {
   user?: UserSession;
@@ -59,6 +60,7 @@ export const ProductCard = ({ producto, user }: Props) => {
         <div className="flex flex-wrap justify-between w-full px-1 py-4">
           <div>
             <div className="text-vino-500 font-bold text-xl mb-2">{producto.nombre}</div>
+            <ProductRating productId={producto.idProducto} />
             <div className="w-full">
               <p className=" text-slate-600 text-base mb-8 min-h-[120px]">
                 {producto.descripcion?.length! > 150
