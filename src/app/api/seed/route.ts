@@ -49,6 +49,47 @@ export async function GET() {
       .map((producto) => ({ ...producto, imagen: base64ToBuffer(producto.imagen) })),
   });
 
+  await prisma.tipoProducto.createMany({
+    data: [
+      { idTipoProducto: 1, nombre: 'Juguete' },
+      { idTipoProducto: 2, nombre: 'Comida' },
+      { idTipoProducto: 3, nombre: 'Gimnasios' },
+      { idTipoProducto: 4, nombre: 'Camas' },
+    ]
+  });
+
+  await prisma.marca.createMany({
+    data: [
+      { idMarca: 1, nombre: 'Dogchow' },
+      { idMarca: 2, nombre: 'Hills' },
+      { idMarca: 3, nombre: 'Besties' },
+      { idMarca: 4, nombre: 'Pro Plan' },
+    ]
+  });
+
+  await prisma.producto.createMany({
+    data: [
+      {
+        nombre: 'rfd',
+        descripcion: 'fdfdfdfd',
+        precio: 2434,
+        cantidad: 343,
+        idMarca: 1,
+        idTipo: 1,
+        imagen: faker.image.dataUri({ width: 640, height: 480, type: 'svg-base64', color: faker.color.rgb() }),
+      },
+      {
+        nombre: 'rfd',
+        descripcion: 'fdfdfdfd',
+        precio: 2434,
+        cantidad: 343,
+        idMarca: 1,
+        idTipo: 1,
+        imagen: faker.image.dataUri({ width: 640, height: 480, type: 'svg-base64', color: faker.color.rgb() }),
+      },
+    ].map((producto) => ({ ...producto, imagen: base64ToBuffer(producto.imagen) }));
+  });
+
   const rolesProbability: string[] = [
     'ADMIN',
     'ADMIN',
@@ -79,7 +120,8 @@ export async function GET() {
         // }),
         email: `${i + 1}@m.com`,
         password: bcrypt.hashSync('123', 10),
-        usuario: faker.internet.userName({ firstName: nombre, lastName: apellido }),
+        // usuario: `${faker.internet.userName({ firstName: nombre, lastName: apellido })}${i + 1}`,
+        usuario: `${nombre}${i + 1}`,
         role: i === 0 ? 'ADMIN' : rolesProbability[Math.floor(Math.random() * 10)],
         telefono: faker.number.bigInt({ min: 3000000000, max: 3009099999 }),
         direccion: faker.location.streetAddress(),
@@ -132,7 +174,7 @@ export async function GET() {
           idUsuario: user.id,
           idProducto: Number(product.idProducto),
           puntuacion: puntuacionRangeProbability[Math.floor(Math.random() * puntuacionRangeProbability.length)],
-          comentario: faker.lorem.sentences({ min: 1, max: 3 }),
+          comentario: faker.lorem.sentences({ min: 1, max: 2 }),
           fechaResena: faker.date.between({ from: '2020-01-01T00:00:00.000Z', to: '2025-01-01T00:00:00.000Z' }),
         })),
       )

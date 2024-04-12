@@ -333,7 +333,7 @@ model User {
   apellido            String?          @map("apellido") @db.VarChar(200)
   telefono            BigInt?          @map("telefono")
   email               String           @unique(map: "correo") @map("correo") @db.VarChar(200)
-  usuario             String           @unique(map: "usuario") @map("usuario") @db.VarChar(20)
+  usuario             String           @unique(map: "usuario") @map("usuario") @db.VarChar(30)
   role                String           @default(dbgenerated("(_utf8mb4\\'ADMIN\\')")) @map("role") @db.VarChar(20)
   direccion           String?          @map("direccion") @db.VarChar(200)
   password            String           @map("contrasena") @db.VarChar(255)
