@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import { Inicio } from '@/views/inicio';
 
 export default function Home() {
-  redirect('/products');
+  return <Inicio />;
 }

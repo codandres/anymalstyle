@@ -16,8 +16,8 @@ export class ProductController {
     return getProductById(productId);
   }
 
-  async getAll(offset: number, limit: number): Promise<ProductoDto[]> {
-    return getAllProducts(offset, limit);
+  async getAll(offset: number, limit: number, nombre?: string): Promise<ProductoDto[]> {
+    return getAllProducts(offset, limit, nombre);
   }
 
   async create(product: CreateProductoDto): Promise<void> {

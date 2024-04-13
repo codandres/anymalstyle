@@ -22,9 +22,9 @@ export const ProductsList = ({ user, products }: Props) => {
       </div>
       <div>
         <div className="grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-10">
-          {products!.map((product) => (
-            <ProductCard key={product.idProducto} producto={product} user={user} />
-          ))}
+          {products?.length
+            ? products!.map((product) => <ProductCard key={product.idProducto} producto={product} user={user} />)
+            : 'No hay productos o se encontró productos'}
         </div>
       </div>
     </div>

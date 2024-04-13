@@ -48,9 +48,7 @@ export async function getProductById(productId: number): Promise<ProductoDto> {
   return await toProductoDto(producto);
 }
 
-export async function getAllProducts(offset: number, limit: number): Promise<ProductoDto[]> {
-  console.log({ offset, limit });
-
+export async function getAllProducts(offset: number, limit: number, nombre?: string): Promise<ProductoDto[]> {
   if (isNaN(offset)) {
     throw new Error('offset must be a number');
   }
@@ -59,9 +57,25 @@ export async function getAllProducts(offset: number, limit: number): Promise<Pro
     throw new Error('limit must be a number');
   }
 
+  const searchQuery = !nombre
+    ? undefined
+    : {
+        where: {
+          OR: [
+            {
+              nombre: { contains: nombre },
+            },
+            {
+              descripcion: { contains: nombre },
+            },
+          ],
+        },
+      };
+
   const productos: Producto[] = await prisma.producto.findMany({
     skip: offset,
     take: limit,
+    ...searchQuery,
     include: { tipo: true, marca: true },
   });
 
