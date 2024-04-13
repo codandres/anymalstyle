@@ -109,6 +109,7 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
         cantidad: parseInt(values.cantidad),
         precio: Number(values.precio),
         imagen: imageRaw,
+        estado: 'ACTIVO',
         idTipo: values.idTipo ? parseInt(values.idTipo) : undefined,
         idMarca: values.idMarca ? parseInt(values.idMarca) : undefined,
       };

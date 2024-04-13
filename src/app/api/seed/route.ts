@@ -24,15 +24,47 @@ export async function GET() {
   await prisma.user.deleteMany();
   await prisma.resena.deleteMany();
 
-  const marcas = await prisma.marca.createMany({
-    data: Array.from({ length: 20 }).map((_, i) => ({ idMarca: i + 1, nombre: faker.commerce.department() })),
-  });
+  // const marcas = await prisma.marca.createMany({
+  //   data: Array.from({ length: 20 }).map((_, i) => ({ idMarca: i + 1, nombre: faker.commerce.department() })),
+  // });
 
-  console.log('marcas :>> ', marcas);
+  // console.log('marcas :>> ', marcas);
+
+  // const tipos = await prisma.tipoProducto.createMany({
+  //   data: Array.from({ length: 20 }).map((_, i) => ({ idTipoProducto: i + 1, nombre: faker.commerce.product() })),
+  // });
 
   const tipos = await prisma.tipoProducto.createMany({
-    data: Array.from({ length: 20 }).map((_, i) => ({ idTipoProducto: i + 1, nombre: faker.commerce.product() })),
+    data: [
+      { idTipoProducto: 1, nombre: 'Juguete' },
+      { idTipoProducto: 2, nombre: 'Comida' },
+      { idTipoProducto: 3, nombre: 'Gimnasios' },
+      { idTipoProducto: 4, nombre: 'Camas' },
+    ],
   });
+
+  const marcas = await prisma.marca.createMany({
+    data: [
+      { idMarca: 1, nombre: 'Dogchow' },
+      { idMarca: 2, nombre: 'Hills' },
+      { idMarca: 3, nombre: 'Besties' },
+      { idMarca: 4, nombre: 'Pro Plan' },
+    ],
+  });
+
+  const estadoProbability: string[] = [
+    'ACTIVO',
+    'ACTIVO',
+    'ACTIVO',
+    'ACTIVO',
+    'ACTIVO',
+    'ACTIVO',
+    'ACTIVO',
+    'INACTIVO',
+    'INACTIVO',
+    'INACTIVO',
+    'INACTIVO',
+  ];
 
   await prisma.producto.createMany({
     data: Array.from({ length: 20 })
@@ -43,28 +75,11 @@ export async function GET() {
         cantidad: faker.number.int({ min: 1, max: 2000 }),
         precio: faker.commerce.price({ min: 500, max: 1000000 }),
         idMarca: faker.number.int({ min: 1, max: marcas.count }),
+        estado: estadoProbability[Math.floor(Math.random() * estadoProbability.length)],
         idTipo: faker.number.int({ min: 1, max: tipos.count }),
         imagen: faker.image.dataUri({ width: 640, height: 480, type: 'svg-base64', color: faker.color.rgb() }),
       }))
       .map((producto) => ({ ...producto, imagen: base64ToBuffer(producto.imagen) })),
-  });
-
-  await prisma.tipoProducto.createMany({
-    data: [
-      { idTipoProducto: 1, nombre: 'Juguete' },
-      { idTipoProducto: 2, nombre: 'Comida' },
-      { idTipoProducto: 3, nombre: 'Gimnasios' },
-      { idTipoProducto: 4, nombre: 'Camas' },
-    ]
-  });
-
-  await prisma.marca.createMany({
-    data: [
-      { idMarca: 1, nombre: 'Dogchow' },
-      { idMarca: 2, nombre: 'Hills' },
-      { idMarca: 3, nombre: 'Besties' },
-      { idMarca: 4, nombre: 'Pro Plan' },
-    ]
   });
 
   await prisma.producto.createMany({
@@ -87,7 +102,7 @@ export async function GET() {
         idTipo: 1,
         imagen: faker.image.dataUri({ width: 640, height: 480, type: 'svg-base64', color: faker.color.rgb() }),
       },
-    ].map((producto) => ({ ...producto, imagen: base64ToBuffer(producto.imagen) }));
+    ].map((producto) => ({ ...producto, imagen: base64ToBuffer(producto.imagen) })),
   });
 
   const rolesProbability: string[] = [
@@ -122,7 +137,7 @@ export async function GET() {
         password: bcrypt.hashSync('123', 10),
         // usuario: `${faker.internet.userName({ firstName: nombre, lastName: apellido })}${i + 1}`,
         usuario: `${nombre}${i + 1}`,
-        role: i === 0 ? 'ADMIN' : rolesProbability[Math.floor(Math.random() * 10)],
+        role: i === 0 ? 'ADMIN' : rolesProbability[Math.floor(Math.random() * rolesProbability.length)],
         telefono: faker.number.bigInt({ min: 3000000000, max: 3009099999 }),
         direccion: faker.location.streetAddress(),
       };

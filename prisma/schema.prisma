@@ -227,6 +227,7 @@ model Producto {
   precio      Decimal       @map("precio") @db.Decimal(10, 0)
   cantidad    Int           @map("cantidad")
   descripcion String?       @map("descripcion") @db.Text
+  estado      String        @default(dbgenerated("(_utf8mb4\\'ACTIVO\\')")) @map("estado") @db.VarChar(30)
   imagen      Bytes?        @map("imagen") @db.LongBlob()
   idTipo      BigInt?       @map("id_tipo") @db.BigInt()
   idMarca     BigInt?       @map("id_marca") @db.BigInt()

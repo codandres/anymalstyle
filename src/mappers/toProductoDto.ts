@@ -18,6 +18,7 @@ export const toProductoDto = async (product: Producto & { tipo?: any; marca?: an
   nombre: product.nombre,
   precio: Number(product.precio),
   imagen: await getImageBase64Data(product.imagen),
+  estado: product.estado,
   idMarca: Number(product.idMarca),
   idTipo: Number(product.idTipo),
   tipo: product?.tipo?.nombre,

@@ -110,7 +110,7 @@ export async function updateProduct(productDto: UpdateProductoDto): Promise<void
       imageRaw = Buffer.from(productDto.imagen, 'binary');
     }
 
-    const product: Prisma.ProductoCreateInput = {
+    const product: Prisma.ProductoUpdateInput = {
       nombre: payload.nombre,
       precio: payload.precio,
       cantidad: payload.cantidad,
@@ -126,6 +126,34 @@ export async function updateProduct(productDto: UpdateProductoDto): Promise<void
   }
 
   redirect('/products');
+}
+
+export async function activeProduct(idProducto: number): Promise<void> {
+  try {
+    await getProduct(idProducto);
+
+    const data: Prisma.ProductoUpdateInput = { estado: 'ACTIVO' };
+
+    await prisma.producto.update({ data, where: { idProducto } });
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath('/products');
+}
+
+export async function inactiveProduct(idProducto: number): Promise<void> {
+  try {
+    await getProduct(idProducto);
+
+    const data: Prisma.ProductoUpdateInput = { estado: 'INACTIVO' };
+
+    await prisma.producto.update({ data, where: { idProducto } });
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath('/products');
 }
 
 export async function deleteProductById(idProducto: number): Promise<void> {

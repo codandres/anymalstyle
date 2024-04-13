@@ -101,6 +101,7 @@ nombre VARCHAR(150) NOT NULL,
 precio DECIMAL NOT NULL,
 cantidad INT NOT NULL,
 descripcion TEXT,
+estado VARCHAR(30) NOT NULL DEFAULT('ACTIVO'),
 imagen LONGBLOB
 );
 
