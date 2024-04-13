@@ -28,7 +28,7 @@ export const ProductRating = ({ productId, showPromedio, showTotalResenas }: Pro
           ))}
           {showPromedio && (
             <span className="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
-              {puntuaciones?.puntuacionPromedio.toFixed(2) || 0}
+              {(puntuaciones?.puntuacionPromedio || 0).toFixed(2) || 0}
             </span>
           )}
 
