@@ -20,10 +20,10 @@ interface Props {
 }
 
 interface ProductoForm {
-  nombre: string;
-  descripcion: string;
-  cantidad: string | number;
-  precio: string | number;
+  nombre?: string;
+  descripcion?: string;
+  cantidad?: string | number;
+  precio?: string | number;
   imagen?: string;
   idTipo?: string | number;
   idMarca?: string | number;
@@ -73,21 +73,21 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
 
   if (isEditing) {
     initialValues = {
-      nombre: product?.nombre || '',
-      descripcion: product?.descripcion || '',
-      cantidad: product?.cantidad || '',
-      precio: product?.precio || '',
-      imagen: product?.imagen || '',
-      idTipo: product?.idTipo || '',
-      idMarca: product?.idMarca || '',
+      nombre: product?.nombre || undefined,
+      descripcion: product?.descripcion || undefined,
+      cantidad: product?.cantidad || undefined,
+      precio: product?.precio || undefined,
+      imagen: product?.imagen || undefined,
+      idTipo: product?.idTipo || undefined,
+      idMarca: product?.idMarca || undefined,
     };
   } else {
     initialValues = {
-      nombre: 'Pelota Dorada',
-      descripcion: 'Pelota de colores',
-      cantidad: 30,
-      precio: 3500,
-      imagen: '',
+      nombre: undefined,
+      descripcion: undefined,
+      cantidad: undefined,
+      precio: undefined,
+      imagen: undefined,
       idTipo: undefined,
       idMarca: undefined,
     };

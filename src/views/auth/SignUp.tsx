@@ -24,14 +24,24 @@ const formValidations = yup.object({
 export const SignUp = () => {
   const authController = useMemo(() => new AuthController(), []);
 
+  // const initialValues = {
+  //   nombre: 'Miguel',
+  //   apellido: 'Mora',
+  //   cedula: 2,
+  //   telefono: 300,
+  //   email: 'user1@mail.com',
+  //   usuario: 'user1',
+  //   password: '123',
+  // };
+
   const initialValues = {
-    nombre: 'Miguel',
-    apellido: 'Mora',
-    cedula: 2,
-    telefono: 300,
-    email: 'user1@mail.com',
-    usuario: 'user1',
-    password: 'pass123',
+    nombre: undefined,
+    apellido: undefined,
+    cedula: undefined,
+    telefono: undefined,
+    email: undefined,
+    usuario: undefined,
+    password: undefined,
   };
 
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
