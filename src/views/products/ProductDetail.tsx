@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 
 interface Props {
   productId: number;
-  user: UserSession;
+  user?: UserSession;
 }
 
 export const ProductDetail = ({ productId, user }: Props) => {
