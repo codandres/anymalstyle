@@ -1,17 +1,29 @@
 'use client';
 
+import { User as UserSession } from 'next-auth';
 import { Spinner } from '@/components/loaders';
 import { ProductRating } from '@/components/products';
 
 import { useGetProductById } from '@/hooks/useGetProductById';
 import Image from 'next/image';
+import { titleFormat } from '@/helpers/shared/titleFormat';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   productId: number;
+  user: UserSession;
 }
 
-export const ProductDetail = ({ productId }: Props) => {
+export const ProductDetail = ({ productId, user }: Props) => {
   const { product, isLoading, error } = useGetProductById(productId);
+  const router = useRouter();
+  const isActivo: boolean = product?.estado === 'ACTIVO';
+
+  if (!isLoading && !isActivo && user?.role !== 'ADMIN') {
+    router.push('/products');
+
+    return;
+  }
 
   if (error) {
     return <div>Un error inesperado ha occurido</div>;
@@ -35,7 +47,14 @@ export const ProductDetail = ({ productId }: Props) => {
           <div className="lg:w-1/2 p-8">
             <div className="divide-y divide-dashed divide-vino-700">
               <div className="pb-5 mb-5">
-                <h3 className="text-gray-900 font-semibold text-5xl tracking-tight">{product?.nombre}</h3>
+                <h3 className="text-gray-900 font-semibold text-5xl tracking-tight">
+                  {product?.nombre}
+                  {user?.role === 'ADMIN' && (
+                    <span className={`ml-2 text-sm ${isActivo ? 'text-blue-400' : 'text-red-400'}`}>
+                      {titleFormat(product?.estado)}
+                    </span>
+                  )}
+                </h3>
                 <ProductRating productId={productId} showPromedio showTotalResenas />
               </div>
               <div className="flex items-center justify-between py-8 mb-2 gap-4">
