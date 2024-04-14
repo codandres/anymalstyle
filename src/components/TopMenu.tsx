@@ -4,7 +4,7 @@ import { FiUserCheck } from 'react-icons/fi';
 import { LogoutButton } from './auth/LogoutButton';
 import { getUserSession } from '@/helpers/auth/getUserSession';
 import { User } from 'next-auth';
-import { TopMenuItem } from './products/TopMenuItem';
+import { TopMenuItem } from './TopMenuItem';
 import { redirect } from 'next/navigation';
 import { Spinner } from './loaders';
 
@@ -32,7 +32,7 @@ export const TopMenu = async () => {
   const handleSearch = async (formData: FormData) => {
     'use server';
 
-    const nombre: string = formData.get('leadingIcon') as string;
+    const nombre: string = formData.get('nombre') as string;
 
     if (!nombre) {
       redirect('products');
@@ -62,16 +62,16 @@ export const TopMenu = async () => {
           <div className="flex space-x-2">
             <div hidden className="md:block">
               <form action={handleSearch}>
-                <div className="relative flex items-center text-gray-400 focus-within:text-cyan-400">
+                <div className="relative flex items-center text-gray-400 focus-within:text-vino-500">
                   <span className="absolute left-4 h-6 flex items-center pr-3 border-r border-gray-300">
-                    {loading ? <Spinner className="text-slate-400 focus-within:text-cyan-400" /> : <CiSearch />}
+                    {loading ? <Spinner className="text-slate-400 focus-within:text-vino-500" /> : <CiSearch />}
                   </span>
                   <input
                     type="search"
-                    name="leadingIcon"
-                    id="leadingIcon"
+                    name="nombre"
+                    id="nombre"
                     placeholder="Buscar producto"
-                    className="w-full pl-14 pr-4 py-2.5 rounded-xl text-sm text-gray-600 outline-none border border-gray-300 focus:border-cyan-300 transition"
+                    className="w-full pl-14 pr-4 py-2.5 rounded-xl text-sm text-gray-600 outline-none border border-gray-300 focus:border-vino-500 transition"
                   />
                 </div>
               </form>
@@ -99,7 +99,7 @@ export const TopMenu = async () => {
             </Link>
             <div className="ml-2">
               <p>
-                {user && `Hola ${user.name || 'Usuario'}!`}{' '}
+                {user && `Hola ${user.name || 'Usuario'}!`}
                 <span className="text-vino-700 font-bold text-xs">{user?.role}</span>
               </p>
               <p>{user && <LogoutButton />}</p>
