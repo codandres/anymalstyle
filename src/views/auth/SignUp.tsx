@@ -8,21 +8,23 @@ import { useMemo, useState } from 'react';
 import * as yup from 'yup';
 import { toast } from 'react-hot-toast';
 import { Spinner } from '@/components/loaders';
+import { useRouter } from 'next/navigation';
 
 const requiredMessage = 'este campo es requerido';
 
 const formValidations = yup.object({
   nombre: yup.string().required(requiredMessage),
-  apellido: yup.string().required(requiredMessage),
+  apellido: yup.string().optional(),
   cedula: yup.number().required(requiredMessage).min(1, 'Unidades mínima: 1'),
-  telefono: yup.number().required(requiredMessage).min(1, 'Unidades mínima: 1'),
-  email: yup.string().email().required(requiredMessage),
+  telefono: yup.number().optional().min(1, 'Unidades mínima: 1'),
+  email: yup.string().email('debe ser un correo váldio').required(requiredMessage),
   usuario: yup.string().required(requiredMessage),
   password: yup.string().required(requiredMessage),
 });
 
 export const SignUp = () => {
   const authController = useMemo(() => new AuthController(), []);
+  const router = useRouter();
 
   // const initialValues = {
   //   nombre: 'Miguel',
@@ -47,13 +49,14 @@ export const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
 
   const onSubmit = async (values: any) => {
-    const { error } = await authController.createUser(values);
+    const { error } = await authController.createUser(values, false);
 
     if (error) {
       toast.error(error.message);
       setErrorMessage(error.message);
     } else {
-      toast.success('Usuario creado correctamente!');
+      toast.success('Usuario creado correctamente!', { duration: 4000 });
+      router.push('/signin');
     }
   };
 
@@ -179,7 +182,7 @@ export const SignUp = () => {
                     onChange={handleChange}
                     value={values.usuario}
                   />
-                  <div className="text-vino-700">{errors.email && touched.email && errors.email}</div>
+                  <div className="text-vino-700">{errors.usuario && touched.usuario && errors.usuario}</div>
                 </div>
                 {/* <!-- Password Input --> */}
                 <div className="mb-8">

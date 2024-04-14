@@ -100,7 +100,7 @@ export const TopMenu = async () => {
             <div className="ml-2">
               <p>
                 {user && `Hola ${user.name || 'Usuario'}!`}
-                <span className="text-vino-700 font-bold text-xs">{user?.role}</span>
+                <span className="text-vino-700 font-bold text-xs ml-1">{user?.role}</span>
               </p>
               <p>{user && <LogoutButton />}</p>
             </div>

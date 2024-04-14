@@ -113,7 +113,7 @@ export const SignIn = () => {
                 {/* <!-- Forgot Password Link --> */}
                 <div className="mb-6 text-vino-500">
                   <Link href="#" className="hover:underline">
-                    Olvidaste Contraseña?
+                    ¿Olvidaste tu contraseña?
                   </Link>
                 </div>
                 {/* <!-- Login Button --> */}

@@ -158,7 +158,7 @@ export const ProductTemplateEditor = ({ productId }: Props) => {
           <div className="divide-y divide-dashed divide-vino-700 px-5 pb-5 w-1/2 pt-6">
             <div className="pb-8">
               <span className="text-3xl font-bold text-vino-500">
-                {isEditing ? 'Edición del Producto' : 'Creación del roducto'}
+                {isEditing ? 'Edición del Producto' : 'Creación del Producto'}
               </span>
             </div>
 

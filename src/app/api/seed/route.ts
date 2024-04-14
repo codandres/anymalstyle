@@ -24,7 +24,7 @@ export async function GET() {
   await prisma.user.deleteMany();
   await prisma.resena.deleteMany();
 
-  const tipos = await prisma.tipoProducto.createMany({
+  await prisma.tipoProducto.createMany({
     data: [
       { idTipoProducto: 1, nombre: 'Juguete' },
       { idTipoProducto: 2, nombre: 'Comida' },
@@ -33,42 +33,45 @@ export async function GET() {
     ],
   });
 
-  const marcas = await prisma.marca.createMany({
+  await prisma.marca.createMany({
     data: [
       { idMarca: 1, nombre: 'Dogchow' },
       { idMarca: 2, nombre: 'Hills' },
       { idMarca: 3, nombre: 'Besties' },
       { idMarca: 4, nombre: 'Pro Plan' },
+      { idMarca: 5, nombre: 'Guamba' },
+      { idMarca: 6, nombre: 'Equilibrio' },
+      { idMarca: 7, nombre: 'Inaba Premium' },
     ],
   });
 
   await prisma.producto.createMany({
     data: [
       {
-        nombre: 'rfd',
-        descripcion: 'fdfdfdfd',
-        precio: 2434,
-        cantidad: 343,
-        idMarca: 1,
-        idTipo: 1,
+        nombre: 'Churu inaba',
+        descripcion: '¡Estos sabrosos snacks para gatos se hacen con atún silvestre o pollo criado en granjas puro y natural! Disponibles en nueve variedades deliciosas, los Churu® Purés tienen el alto contenido de humedad necesario para la salud de los felinos.',
+        precio: 24000,
+        cantidad: 90,
+        idMarca: 7,
+        idTipo: 2,
         imagen: faker.image.dataUri({ width: 640, height: 480, type: 'svg-base64', color: faker.color.rgb() }),
       },
       {
-        nombre: 'rfd',
-        descripcion: 'fdfdfdfd',
-        precio: 2434,
-        cantidad: 343,
-        idMarca: 1,
-        idTipo: 1,
+        nombre: 'Equilibrio Gato Adulto Castrado +7 Años 1.5 Kg',
+        descripcion: 'Equilibrio Gato Adulto Castrado +7 Años 1.5 Kg es un alimento completo para gatos mayores de 7 años. Combina ingredientes que colaboran al control del peso, previene  la acumulación de pelotas de pelo en el tracto digestivo, auxilia en el mantenimiento de la salud del tracto urinario.',
+        precio: 90000,
+        cantidad: 70,
+        idMarca: 6,
+        idTipo: 2,
         imagen: faker.image.dataUri({ width: 640, height: 480, type: 'svg-base64', color: faker.color.rgb() }),
       },
       {
-        nombre: 'rfd',
-        descripcion: 'fdfdfdfd',
-        precio: 2434,
-        cantidad: 343,
-        idMarca: 1,
-        idTipo: 1,
+        nombre: 'Cama para perro antiestrés tipo Donut',
+        descripcion: 'Gracias a su forma redonda, la cama para perros tipo donut de alta calidad es ideal para las mascotas a las que les encanta acurrucarse. El borde elevado de esta cama para perros crea una sensación de seguridad y proporciona soporte para la cabeza y el cuello.',
+        precio: 120000,
+        cantidad: 100,
+        idMarca: 5,
+        idTipo: 4,
         imagen: faker.image.dataUri({ width: 640, height: 480, type: 'svg-base64', color: faker.color.rgb() }),
       },
     ].map((producto) => ({ ...producto, imagen: base64ToBuffer(producto.imagen) })),
@@ -191,13 +194,19 @@ export async function GET() {
     5, 4, 4.5, 5, 4, 4.5, 5, 5, 5, 5,
   ];
 
+  const puntuacionRangeProbabilityZule: number[] = [
+    4, 4.5, 5, 4, 4.5, 5, 4, 4.5, 5, 4, 4.5, 5, 4, 4.5,
+    5, 4, 4.5, 5, 4, 4.5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+  ];
+
   const res = await prisma.resena.createMany({
     data: users
       .map((user) =>
         products.map((product) => ({
           idUsuario: user.id,
           idProducto: Number(product.idProducto),
-          puntuacion: puntuacionRangeProbability[Math.floor(Math.random() * puntuacionRangeProbability.length)],
+          // puntuacion: puntuacionRangeProbability[Math.floor(Math.random() * puntuacionRangeProbability.length)],
+          puntuacion: puntuacionRangeProbabilityZule[Math.floor(Math.random() * puntuacionRangeProbabilityZule.length)],
           comentario: faker.lorem.sentences({ min: 1, max: 2 }),
           fechaResena: faker.date.between({ from: '2020-01-01T00:00:00.000Z', to: '2025-01-01T00:00:00.000Z' }),
         })),

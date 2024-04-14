@@ -4,8 +4,8 @@ import { UsuarioDto } from '@/dto/auth/UsuarioDto';
 import { signInEmailPassword, signUpUser } from '@/models/authModel';
 
 export class AuthController {
-  async createUser(usuario: CreateUsuarioDto): Promise<CreateUsuarioResponse> {
-    return await signUpUser(usuario) as CreateUsuarioResponse;
+  async createUser(usuario: CreateUsuarioDto, redirection?: boolean): Promise<CreateUsuarioResponse> {
+    return await signUpUser(usuario, redirection) as CreateUsuarioResponse;
   }
 
   async login(email?: string, password?: string): Promise<UsuarioDto | null> {
