@@ -24,16 +24,6 @@ export async function GET() {
   await prisma.user.deleteMany();
   await prisma.resena.deleteMany();
 
-  // const marcas = await prisma.marca.createMany({
-  //   data: Array.from({ length: 20 }).map((_, i) => ({ idMarca: i + 1, nombre: faker.commerce.department() })),
-  // });
-
-  // console.log('marcas :>> ', marcas);
-
-  // const tipos = await prisma.tipoProducto.createMany({
-  //   data: Array.from({ length: 20 }).map((_, i) => ({ idTipoProducto: i + 1, nombre: faker.commerce.product() })),
-  // });
-
   const tipos = await prisma.tipoProducto.createMany({
     data: [
       { idTipoProducto: 1, nombre: 'Juguete' },
@@ -52,38 +42,17 @@ export async function GET() {
     ],
   });
 
-  const estadoProbability: string[] = [
-    'ACTIVO',
-    'ACTIVO',
-    'ACTIVO',
-    'ACTIVO',
-    'ACTIVO',
-    'ACTIVO',
-    'ACTIVO',
-    'INACTIVO',
-    'INACTIVO',
-    'INACTIVO',
-    'INACTIVO',
-  ];
-
-  await prisma.producto.createMany({
-    data: Array.from({ length: 20 })
-      .map((_, i) => ({
-        idProducto: i + 1,
-        nombre: faker.commerce.product(),
-        descripcion: faker.lorem.sentences({ min: 3, max: 20 }),
-        cantidad: faker.number.int({ min: 1, max: 2000 }),
-        precio: faker.commerce.price({ min: 500, max: 1000000 }),
-        idMarca: faker.number.int({ min: 1, max: marcas.count }),
-        estado: estadoProbability[Math.floor(Math.random() * estadoProbability.length)],
-        idTipo: faker.number.int({ min: 1, max: tipos.count }),
-        imagen: faker.image.dataUri({ width: 640, height: 480, type: 'svg-base64', color: faker.color.rgb() }),
-      }))
-      .map((producto) => ({ ...producto, imagen: base64ToBuffer(producto.imagen) })),
-  });
-
   await prisma.producto.createMany({
     data: [
+      {
+        nombre: 'rfd',
+        descripcion: 'fdfdfdfd',
+        precio: 2434,
+        cantidad: 343,
+        idMarca: 1,
+        idTipo: 1,
+        imagen: faker.image.dataUri({ width: 640, height: 480, type: 'svg-base64', color: faker.color.rgb() }),
+      },
       {
         nombre: 'rfd',
         descripcion: 'fdfdfdfd',
@@ -104,6 +73,46 @@ export async function GET() {
       },
     ].map((producto) => ({ ...producto, imagen: base64ToBuffer(producto.imagen) })),
   });
+
+  // const marcas = await prisma.marca.createMany({
+  //   data: Array.from({ length: 20 }).map((_, i) => ({ idMarca: i + 1, nombre: faker.commerce.department() })),
+  // });
+
+  // console.log('marcas :>> ', marcas);
+
+  // const tipos = await prisma.tipoProducto.createMany({
+  //   data: Array.from({ length: 20 }).map((_, i) => ({ idTipoProducto: i + 1, nombre: faker.commerce.product() })),
+  // });
+
+  const estadoProbability: string[] = [
+    'ACTIVO',
+    'ACTIVO',
+    'ACTIVO',
+    'ACTIVO',
+    'ACTIVO',
+    'ACTIVO',
+    'ACTIVO',
+    'INACTIVO',
+    'INACTIVO',
+    'INACTIVO',
+    'INACTIVO',
+  ];
+
+  // await prisma.producto.createMany({
+  //   data: Array.from({ length: 20 })
+  //     .map((_, i) => ({
+  //       idProducto: i + 1,
+  //       nombre: faker.commerce.product(),
+  //       descripcion: faker.lorem.sentences({ min: 3, max: 20 }),
+  //       cantidad: faker.number.int({ min: 1, max: 2000 }),
+  //       precio: faker.commerce.price({ min: 500, max: 1000000 }),
+  //       idMarca: faker.number.int({ min: 1, max: marcas.count }),
+  //       estado: estadoProbability[Math.floor(Math.random() * estadoProbability.length)],
+  //       idTipo: faker.number.int({ min: 1, max: tipos.count }),
+  //       imagen: faker.image.dataUri({ width: 640, height: 480, type: 'svg-base64', color: faker.color.rgb() }),
+  //     }))
+  //     .map((producto) => ({ ...producto, imagen: base64ToBuffer(producto.imagen) })),
+  // });
 
   const rolesProbability: string[] = [
     'ADMIN',
