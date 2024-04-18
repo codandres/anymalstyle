@@ -7,9 +7,25 @@ import { NextResponse } from 'next/server';
 import { Faker, es, es_MX } from '@faker-js/faker';
 import bcrypt from 'bcryptjs';
 
+import agility from '@/../public/images/productos/agility.jpg';
+import cama from '@/../public/images/productos/cama.webp';
+import churu from '@/../public/images/productos/churuuu.webp';
+import equilibrio from '@/../public/images/productos/equilibrio.jpg';
+import path from 'path';
+
+import fs from 'fs';
+
 const base64ToBuffer = (base64String: string): Buffer => {
   const base64Data = base64String.replace(/^data:image\/.*?;base64,/, ''); // Ej: data:image/svg+xml;base64,PHN2ZyB4bW
   return Buffer.from(base64Data, 'base64');
+};
+
+const localPathToBuffer = (imagePath: string): Buffer => {
+  const rootDir = process.cwd();
+
+  const file: Buffer = fs.readFileSync(path.join(rootDir, imagePath.replace('_next', '.next')));
+
+  return file;
 };
 
 export async function GET() {
@@ -42,80 +58,56 @@ export async function GET() {
       { idMarca: 5, nombre: 'Guamba' },
       { idMarca: 6, nombre: 'Equilibrio' },
       { idMarca: 7, nombre: 'Inaba Premium' },
+      { idMarca: 8, nombre: 'Agility Gold' },
     ],
   });
+
+  console.log('CREANDO PRODUCTOS!');
 
   await prisma.producto.createMany({
     data: [
       {
         nombre: 'Churu inaba',
-        descripcion: '¡Estos sabrosos snacks para gatos se hacen con atún silvestre o pollo criado en granjas puro y natural! Disponibles en nueve variedades deliciosas, los Churu® Purés tienen el alto contenido de humedad necesario para la salud de los felinos.',
+        descripcion:
+          '¡Estos sabrosos snacks para gatos se hacen con atún silvestre o pollo criado en granjas puro y natural! Disponibles en nueve variedades deliciosas, los Churu® Purés tienen el alto contenido de humedad necesario para la salud de los felinos.',
         precio: 24000,
         cantidad: 90,
         idMarca: 7,
         idTipo: 2,
-        imagen: faker.image.dataUri({ width: 640, height: 480, type: 'svg-base64', color: faker.color.rgb() }),
+        imagen: churu.src,
       },
       {
         nombre: 'Equilibrio Gato Adulto Castrado +7 Años 1.5 Kg',
-        descripcion: 'Equilibrio Gato Adulto Castrado +7 Años 1.5 Kg es un alimento completo para gatos mayores de 7 años. Combina ingredientes que colaboran al control del peso, previene  la acumulación de pelotas de pelo en el tracto digestivo, auxilia en el mantenimiento de la salud del tracto urinario.',
+        descripcion:
+          'Equilibrio Gato Adulto Castrado +7 Años 1.5 Kg es un alimento completo para gatos mayores de 7 años. Combina ingredientes que colaboran al control del peso, previene  la acumulación de pelotas de pelo en el tracto digestivo, auxilia en el mantenimiento de la salud del tracto urinario.',
         precio: 90000,
         cantidad: 70,
         idMarca: 6,
         idTipo: 2,
-        imagen: faker.image.dataUri({ width: 640, height: 480, type: 'svg-base64', color: faker.color.rgb() }),
+        imagen: equilibrio.src,
       },
       {
         nombre: 'Cama para perro antiestrés tipo Donut',
-        descripcion: 'Gracias a su forma redonda, la cama para perros tipo donut de alta calidad es ideal para las mascotas a las que les encanta acurrucarse. El borde elevado de esta cama para perros crea una sensación de seguridad y proporciona soporte para la cabeza y el cuello.',
+        descripcion:
+          'Gracias a su forma redonda, la cama para perros tipo donut de alta calidad es ideal para las mascotas a las que les encanta acurrucarse. El borde elevado de esta cama para perros crea una sensación de seguridad y proporciona soporte para la cabeza y el cuello.',
         precio: 120000,
         cantidad: 100,
         idMarca: 5,
         idTipo: 4,
-        imagen: faker.image.dataUri({ width: 640, height: 480, type: 'svg-base64', color: faker.color.rgb() }),
+        imagen: cama.src,
       },
-    ].map((producto) => ({ ...producto, imagen: base64ToBuffer(producto.imagen) })),
+      {
+        nombre: 'Cama para perro antiestrés tipo Donut',
+        descripcion:
+          'Agility Gold - Pouch Trozos De Cordero Cachorro contiene 70% de carne y 30% de salsa en forma de trozos, con todos los nutrientes que requieren los perros para su óptima nutrición. Esta alternativa de alimentación beneficia la hidratación que requieren los perros diariamente. Es un alimento húmedo sin conservantes artificiales, es apto para perros de todas las razas, es hipo alergénico con nutrientes de alta calidad.',
+        precio: 6000,
+        cantidad: 40,
+        idMarca: 8,
+        idTipo: 2,
+        imagen: agility.src,
+      },
+    ].map((producto) => ({ ...producto, imagen: localPathToBuffer(producto.imagen) })),
   });
-
-  // const marcas = await prisma.marca.createMany({
-  //   data: Array.from({ length: 20 }).map((_, i) => ({ idMarca: i + 1, nombre: faker.commerce.department() })),
-  // });
-
-  // console.log('marcas :>> ', marcas);
-
-  // const tipos = await prisma.tipoProducto.createMany({
-  //   data: Array.from({ length: 20 }).map((_, i) => ({ idTipoProducto: i + 1, nombre: faker.commerce.product() })),
-  // });
-
-  const estadoProbability: string[] = [
-    'ACTIVO',
-    'ACTIVO',
-    'ACTIVO',
-    'ACTIVO',
-    'ACTIVO',
-    'ACTIVO',
-    'ACTIVO',
-    'INACTIVO',
-    'INACTIVO',
-    'INACTIVO',
-    'INACTIVO',
-  ];
-
-  // await prisma.producto.createMany({
-  //   data: Array.from({ length: 20 })
-  //     .map((_, i) => ({
-  //       idProducto: i + 1,
-  //       nombre: faker.commerce.product(),
-  //       descripcion: faker.lorem.sentences({ min: 3, max: 20 }),
-  //       cantidad: faker.number.int({ min: 1, max: 2000 }),
-  //       precio: faker.commerce.price({ min: 500, max: 1000000 }),
-  //       idMarca: faker.number.int({ min: 1, max: marcas.count }),
-  //       estado: estadoProbability[Math.floor(Math.random() * estadoProbability.length)],
-  //       idTipo: faker.number.int({ min: 1, max: tipos.count }),
-  //       imagen: faker.image.dataUri({ width: 640, height: 480, type: 'svg-base64', color: faker.color.rgb() }),
-  //     }))
-  //     .map((producto) => ({ ...producto, imagen: base64ToBuffer(producto.imagen) })),
-  // });
 
   const rolesProbability: string[] = [
     'ADMIN',
@@ -139,16 +131,10 @@ export async function GET() {
         nombre,
         apellido,
         cedula: faker.number.bigInt({ min: 1000000000, max: 1999999999 }),
-        // email: faker.internet.email({
-        //   firstName: nombre,
-        //   lastName: apellido,
-        //   allowSpecialCharacters: true,
-        //   provider: 'mail.com',
-        // }),
+
         email: `${i + 1}@m.com`,
         password: bcrypt.hashSync('123', 10),
-        // usuario: `${faker.internet.userName({ firstName: nombre, lastName: apellido })}${i + 1}`,
-        usuario: `${nombre}${i + 1}`,
+        usuario: i === 0 ? 'user1' : `${nombre}${i + 1}`,
         role: i === 0 ? 'ADMIN' : rolesProbability[Math.floor(Math.random() * rolesProbability.length)],
         telefono: faker.number.bigInt({ min: 3000000000, max: 3009099999 }),
         direccion: faker.location.streetAddress(),
@@ -189,14 +175,9 @@ export async function GET() {
   console.log('users :>> ', users.length);
   console.log('products :>> ', products.length);
 
-  const puntuacionRangeProbability: number[] = [
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1.5, 2, 2.5, 3, 3.5, 3.5, 3.5, 3.5, 4, 4.5, 5, 4, 4.5, 5, 4, 4.5, 5, 4, 4.5, 5, 4, 4.5,
-    5, 4, 4.5, 5, 4, 4.5, 5, 5, 5, 5,
-  ];
-
   const puntuacionRangeProbabilityZule: number[] = [
-    4, 4.5, 5, 4, 4.5, 5, 4, 4.5, 5, 4, 4.5, 5, 4, 4.5,
-    5, 4, 4.5, 5, 4, 4.5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+    4, 4.5, 5, 4, 4.5, 5, 4, 4.5, 5, 4, 4.5, 5, 4, 4.5, 5, 4, 4.5, 5, 4, 4.5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+    5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
   ];
 
   const res = await prisma.resena.createMany({
@@ -205,7 +186,6 @@ export async function GET() {
         products.map((product) => ({
           idUsuario: user.id,
           idProducto: Number(product.idProducto),
-          // puntuacion: puntuacionRangeProbability[Math.floor(Math.random() * puntuacionRangeProbability.length)],
           puntuacion: puntuacionRangeProbabilityZule[Math.floor(Math.random() * puntuacionRangeProbabilityZule.length)],
           comentario: faker.lorem.sentences({ min: 1, max: 2 }),
           fechaResena: faker.date.between({ from: '2020-01-01T00:00:00.000Z', to: '2025-01-01T00:00:00.000Z' }),

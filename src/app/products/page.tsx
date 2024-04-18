@@ -1,4 +1,4 @@
-export const dynamicParams = true; // true | false,
+export const revalidate = false;
 
 import { Suspense, lazy } from 'react';
 
@@ -20,13 +20,10 @@ export default async function ProductsPage({ searchParams }: Props) {
   const productControler = new ProductController();
   const products: ProductoDto[] = await productControler.getAll(0, 100, searchParams?.nombre);
 
-  const productsToList: ProductoDto[] =
-    user?.role === 'ADMIN' ? products : products?.filter((product) => product.estado === 'ACTIVO');
-
   return (
     <>
       <Suspense fallback={<ProductsListLoader />}>
-        <ProductsList user={user} products={productsToList} />
+        <ProductsList user={user} products={products} />
       </Suspense>
     </>
   );

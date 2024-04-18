@@ -1,6 +1,6 @@
+import { AuthController } from '@/controllers/authController';
 import { UsuarioDto } from '@/dto/auth/UsuarioDto';
 import { toUsuarioDB } from '@/mappers/ToUsuarioDB';
-import { signInEmailPassword } from '@/models/authModel';
 import prisma from '@/orm/prisma';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { Prisma, User } from '@prisma/client';
@@ -18,7 +18,8 @@ export const getAuthOptions = (): AuthOptions => ({
         password: {},
       },
       async authorize(creds) {
-        const user: UsuarioDto | null = await signInEmailPassword(creds?.email, creds?.password);
+        const authController = new AuthController();
+        const user: UsuarioDto | null = await authController.loginEmailUser(creds?.email, creds?.password);
 
         if (!user) return null;
 

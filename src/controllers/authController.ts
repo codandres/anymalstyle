@@ -1,7 +1,7 @@
 import { CreateUsuarioDto } from '@/dto/auth/CreateUsuarioDto';
 import { CreateUsuarioResponse } from '@/dto/auth/CreateUsuarioResponse';
 import { UsuarioDto } from '@/dto/auth/UsuarioDto';
-import { signInEmailPassword, signUpUser } from '@/models/authModel';
+import { signInEmailPassword, signInEmailUserPassword, signUpUser } from '@/models/authModel';
 
 export class AuthController {
   async createUser(usuario: CreateUsuarioDto, redirection?: boolean): Promise<CreateUsuarioResponse> {
@@ -10,5 +10,9 @@ export class AuthController {
 
   async login(email?: string, password?: string): Promise<UsuarioDto | null> {
     return await signInEmailPassword(email, password);
+  }
+
+  async loginEmailUser(email?: string, password?: string): Promise<UsuarioDto | null> {
+    return await signInEmailUserPassword(email, password);
   }
 }

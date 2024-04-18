@@ -8,6 +8,9 @@ import { useGetProductById } from '@/hooks/useGetProductById';
 import Image from 'next/image';
 import { titleFormat } from '@/helpers/shared/titleFormat';
 import { useRouter } from 'next/navigation';
+import { useProductStore } from '@/hooks/store';
+import { ProductStore } from '@/store';
+import { useEffect } from 'react';
 
 interface Props {
   productId: number;
@@ -16,6 +19,14 @@ interface Props {
 
 export const ProductDetail = ({ productId, user }: Props) => {
   const { product, isLoading, error } = useGetProductById(productId);
+  const { setLoadingSearch } = useProductStore((state: ProductStore) => state);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setLoadingSearch(false);
+    }
+  }, [isLoading, setLoadingSearch]);
+
   const router = useRouter();
   const isActivo: boolean = product?.estado === 'ACTIVO';
 

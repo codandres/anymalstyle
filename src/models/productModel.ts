@@ -3,11 +3,13 @@
 import { CreateProductoDto } from '@/dto/producto/createProductoDto';
 import { UpdateProductoDto } from '@/dto/producto/editProductoDto';
 import { ProductoDto } from '@/dto/producto/productoDto';
+import { getUserSession } from '@/helpers/auth/getUserSession';
 import { toProductoDto } from '@/mappers/toProductoDto';
+import { User as UserSession } from 'next-auth';
 import prisma from '@/orm/prisma';
 import { Prisma, Producto } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+import { RedirectType, redirect } from 'next/navigation';
 import * as yup from 'yup';
 
 const productoCreateSchema: yup.Schema = yup.object({
@@ -56,26 +58,35 @@ export async function getAllProducts(offset: number, limit: number, nombre?: str
   if (isNaN(limit)) {
     throw new Error('limit must be a number');
   }
+  const session: UserSession | undefined = await getUserSession();
 
-  const searchQuery = !nombre
+  const estado = session?.role === 'ADMIN' ? undefined : 'ACTIVO';
+
+  const searchTermQuery: Prisma.ProductoWhereInput | undefined = !nombre
     ? undefined
     : {
-        where: {
-          OR: [
-            {
-              nombre: { contains: nombre },
-            },
-            {
-              descripcion: { contains: nombre },
-            },
-          ],
-        },
+        OR: [
+          {
+            nombre: { contains: nombre },
+          },
+          {
+            tipo: { nombre: { contains: nombre } },
+          },
+          {
+            marca: { nombre: { contains: nombre } },
+          },
+        ],
       };
+
+  const searchQuery: Prisma.ProductoWhereInput = {
+    estado,
+    ...searchTermQuery,
+  };
 
   const productos: Producto[] = await prisma.producto.findMany({
     skip: offset,
     take: limit,
-    ...searchQuery,
+    where: searchQuery,
     include: { tipo: true, marca: true },
   });
 

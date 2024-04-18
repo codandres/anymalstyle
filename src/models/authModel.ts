@@ -64,3 +64,43 @@ export const signInEmailPassword = async (email?: string, password?: string): Pr
     return null;
   }
 };
+
+export const signInEmailUserPassword = async (
+  emailOrUsername?: string,
+  password?: string,
+): Promise<UsuarioDto | null> => {
+  try {
+    if (!emailOrUsername || !password) return null;
+
+    const usuarios: UsuarioDb[] | null = await prisma.user.findMany({
+      where: {
+        OR: [
+          {
+            email: emailOrUsername,
+          },
+          {
+            usuario: emailOrUsername,
+          },
+        ],
+      } as Prisma.UserWhereUniqueInput,
+    });
+
+    if (!usuarios.length) {
+      throw new Error('Usuario no existe');
+    }
+
+    let usuario: UsuarioDb;
+
+    usuarios.forEach((usuarioDb: UsuarioDb) => {
+      if (!bcrypt.compareSync(password, usuarioDb.password ?? '')) {
+        throw new Error('Contraseña incorrecta');
+      }
+      usuario = usuarioDb;
+    });
+
+    return toUsuarioDto(usuario!);
+  } catch (error: any) {
+    console.error(`SignUp error: ${error.message}`);
+    return null;
+  }
+};

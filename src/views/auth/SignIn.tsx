@@ -12,7 +12,7 @@ import { Spinner } from '@/components/loaders';
 const requiredMessage = 'este campo es requerido';
 
 const formValidations = yup.object({
-  email: yup.string().email('debe ser un correo válido').required(requiredMessage),
+  email: yup.string().required(requiredMessage),
   password: yup.string().required(requiredMessage),
 });
 
@@ -74,7 +74,7 @@ export const SignIn = () => {
                 {/* <!-- Correo Input --> */}
                 <div className="mb-4">
                   <label htmlFor="email" className="block text-gray-600">
-                    Correo electrónico
+                    Usuario ó correo electrónico
                   </label>
                   <input
                     type="text"
