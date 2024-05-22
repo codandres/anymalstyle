@@ -22,6 +22,9 @@ export default function RootLayout({
     <AuthProvider>
       <ProductStoreProvider>
         <html lang="en">
+          <head>
+            <link rel="icon" href="/images/logo/favicon.ico" sizes="256*200" />
+          </head>
           <body className={inter.className}>
             <div className="m-auto mb-6 lg:w-[75%] xl:w-[80%] 2xl:w-[85%]">
               {/* <div className="sm:bg-slate-600 md:bg-fuchsia-200 lg:bg-green-200 xl:bg-orange-300 2xl:bg-rose-300 m-auto mb-6 lg:w-[75%] xl:w-[80%] 2xl:w-[85%]"> */}
